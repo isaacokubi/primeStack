@@ -5,6 +5,7 @@ import App from './AppNew.jsx';
 import './styles.css';
 import './portal.css';
 import './ui-fixes.css';
+import './professional-ui.css';
 
 // Lucide icons are decorative UI elements. Mark every SVG as hidden from
 // accessibility/name extraction so labels such as "Explore products svg"
