@@ -26,9 +26,9 @@ const setSession=(res,u)=>res.cookie('ps_token',tokenFor(u),{httpOnly:true,sameS
 const auth=(req,res,next)=>{try{const t=req.cookies.ps_token||String(req.headers.authorization||'').replace(/^Bearer\s+/i,'');if(!t)return fail(res,'Authentication required',401);req.user=jwt.verify(t,JWT_SECRET);next()}catch{return fail(res,'Invalid or expired session',401)}};
 const roles=(...allowed)=>(req,res,next)=>allowed.includes(req.user.role)?next():fail(res,'Insufficient permissions',403);
 
-// PrimeStack inquiry conversations
-// Mounted after authentication/authorization middleware.
-app.use('/api/inquiries', inquiryConversationRoutes);
+// Inquiry conversation endpoints use the same authenticated session as the CMS.
+// auth MUST wrap this router; the router expects req.user to authorize admins/customers.
+app.use('/api/inquiries', auth, inquiryConversationRoutes);
 
 const emailValid=e=>/^\S+@\S+\.\S+$/.test(String(e||''));
 
