@@ -1,175 +1,24 @@
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { ArrowRight, ShieldCheck, UserRound, Shield } from 'lucide-react';
+import { ArrowRight, ShieldCheck, UserRound, Shield, Code2 } from 'lucide-react';
 import api from '../services/api.js';
 
 const LOGIN_MODES = {
-  customer: {
-    label: 'Customer Login',
-    eyebrow: 'CUSTOMER PORTAL',
-    title: 'Welcome back.',
-    description: 'Sign in to manage your primeStack account and services.',
-    icon: UserRound,
-    destination: '/dashboard',
-  },
-  admin: {
-    label: 'Admin Login',
-    eyebrow: 'ADMIN PORTAL',
-    title: 'Welcome, administrator.',
-    description: 'Sign in to manage primeStack products, customers and content.',
-    icon: Shield,
-    destination: '/admin',
-  },
+  customer: { label: 'Customer Login', eyebrow: 'CUSTOMER PORTAL', title: 'Welcome back.', description: 'Sign in to manage your primeStack account and services.', icon: UserRound, destination: '/dashboard' },
+  admin: { label: 'Admin Login', eyebrow: 'ADMIN PORTAL', title: 'Welcome, administrator.', description: 'Sign in to manage primeStack products, customers and content.', icon: Shield, destination: '/admin' },
 };
 
+const publicNav = [['Products','/products'],['Services','/services'],['Case Studies','/case-studies'],['Technology','/technology'],['Blog','/blog'],['Careers','/careers'],['About','/about']];
+
 export default function Login() {
-  const [mode, setMode] = useState('customer');
-  const [form, setForm] = useState({ email: '', password: '' });
-  const [error, setError] = useState('');
-  const [loading, setLoading] = useState(false);
-  const navigate = useNavigate();
-  const current = LOGIN_MODES[mode];
-  const Icon = current.icon;
-
-  const changeMode = (nextMode) => {
-    setMode(nextMode);
-    setError('');
-  };
-
-  const submit = async (event) => {
-    event.preventDefault();
-    setError('');
-    setLoading(true);
-
-    try {
-      const response = await api.post('/auth/login', form);
-      const user = response.data?.data?.user;
-      const role = user?.role;
-
-      if (!user) throw new Error('Login response did not include a user.');
-
-      if (mode === 'admin' && !['Admin', 'Editor'].includes(role)) {
-        await api.post('/auth/logout').catch(() => {});
-        throw new Error('This account does not have administrator access.');
-      }
-
-      if (mode === 'customer' && role !== 'Customer') {
-        await api.post('/auth/logout').catch(() => {});
-        throw new Error('Administrator accounts must use Admin Login.');
-      }
-
-      navigate(mode === 'admin' ? '/admin' : current.destination);
-    } catch (err) {
-      setError(err.response?.data?.message || err.message || 'Unable to sign in.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  return (
+  const [mode, setMode] = useState('customer'); const [form, setForm] = useState({ email: '', password: '' }); const [error, setError] = useState(''); const [loading, setLoading] = useState(false); const navigate = useNavigate(); const current = LOGIN_MODES[mode]; const Icon = current.icon;
+  const changeMode = nextMode => { setMode(nextMode); setError(''); };
+  const submit = async event => { event.preventDefault(); setError(''); setLoading(true); try { const response = await api.post('/auth/login', form); const user = response.data?.data?.user; const role = user?.role; if (!user) throw new Error('Login response did not include a user.'); if (mode === 'admin' && !['Admin','Editor'].includes(role)) { await api.post('/auth/logout').catch(() => {}); throw new Error('This account does not have administrator access.'); } if (mode === 'customer' && role !== 'Customer') { await api.post('/auth/logout').catch(() => {}); throw new Error('Administrator accounts must use Admin Login.'); } navigate(mode === 'admin' ? '/admin' : current.destination); } catch (err) { setError(err.response?.data?.message || err.message || 'Unable to sign in.'); } finally { setLoading(false); } };
+  return <div className="authShell">
+    <header className="authNavbar"><Link className="brand" to="/"><span className="logo"><Code2 size={19}/></span>primeStack</Link><nav>{publicNav.map(([name,path])=><NavItem key={path} name={name} path={path}/>)}<Link className="navLogin" to="/login">Sign in</Link><Link className="navCta" to="/contact">Work With Us</Link></nav><Link className="authMobileHome" to="/">Home</Link></header>
     <div className="authPage">
-      <div className="authPanel">
-        <div className="authBrand">
-          <span className="logo">&lt;/&gt;</span>
-          <span>primeStack</span>
-        </div>
-
-        <div className="loginModeSwitch" role="tablist" aria-label="Choose login type">
-          {Object.entries(LOGIN_MODES).map(([key, item]) => {
-            const ModeIcon = item.icon;
-            return (
-              <button
-                key={key}
-                type="button"
-                className={`loginModeButton ${mode === key ? 'active' : ''}`}
-                onClick={() => changeMode(key)}
-                role="tab"
-                aria-selected={mode === key}
-              >
-                <ModeIcon size={17} />
-                {item.label}
-              </button>
-            );
-          })}
-        </div>
-
-        <span className="eyebrow">{current.eyebrow}</span>
-        <h1>{current.title}</h1>
-        <p className="authLead">{current.description}</p>
-
-        <form className="form authForm" onSubmit={submit}>
-          <label>
-            Email address
-            <input
-              required
-              type="email"
-              autoComplete="email"
-              value={form.email}
-              onChange={(event) => setForm({ ...form, email: event.target.value })}
-              placeholder={mode === 'admin' ? 'admin@primestack.dev' : 'you@company.com'}
-            />
-          </label>
-
-          <label>
-            Password
-            <input
-              required
-              type="password"
-              autoComplete="current-password"
-              value={form.password}
-              onChange={(event) => setForm({ ...form, password: event.target.value })}
-              placeholder="Your password"
-            />
-          </label>
-
-          <div className="authMeta">
-            <span><ShieldCheck size={15} /> Secure sign-in</span>
-            <span><Icon size={15} /> {mode === 'admin' ? 'Staff access' : 'Customer access'}</span>
-          </div>
-
-          <button className="btn primary" disabled={loading} type="submit">
-            {loading ? 'Signing in...' : `Sign in as ${mode === 'admin' ? 'Admin' : 'Customer'}`}
-            <ArrowRight size={18} />
-          </button>
-
-          {error && <p className="error" role="alert">{error}</p>}
-        </form>
-
-        {mode === 'customer' ? (
-          <p className="authSwitch">
-            Don't have an account? <Link to="/register">Create one</Link>
-          </p>
-        ) : (
-          <p className="authSwitch">
-            Customer instead? <button type="button" className="authInlineButton" onClick={() => changeMode('customer')}>Use Customer Login</button>
-          </p>
-        )}
-      </div>
-
-      <aside className="authAside">
-        <span className="eyebrow">PRIMESTACK ACCESS</span>
-        <h2>{mode === 'admin' ? 'Run your primeStack workspace securely.' : 'Your primeStack workspace, in one place.'}</h2>
-        <p>
-          {mode === 'admin'
-            ? 'Administrator access provides tools for managing products, content, customers and business enquiries.'
-            : 'Customer access lets you manage your account, products, requests and profile.'}
-        </p>
-        <ul>
-          {mode === 'admin' ? (
-            <>
-              <li><ShieldCheck />Manage products and content</li>
-              <li><ShieldCheck />Manage customers and enquiries</li>
-              <li><ShieldCheck />Access the administration dashboard</li>
-            </>
-          ) : (
-            <>
-              <li><ShieldCheck />View your products and services</li>
-              <li><ShieldCheck />Track enquiries and requests</li>
-              <li><ShieldCheck />Manage your profile and security</li>
-            </>
-          )}
-        </ul>
-      </aside>
-    </div>
-  );
+      <div className="authPanel"><div className="authBrand"><span className="logo">&lt;/&gt;</span><span>primeStack</span></div><div className="loginModeSwitch" role="tablist" aria-label="Choose login type">{Object.entries(LOGIN_MODES).map(([key,item])=>{const ModeIcon=item.icon;return <button key={key} type="button" className={`loginModeButton ${mode===key?'active':''}`} onClick={()=>changeMode(key)} role="tab" aria-selected={mode===key}><ModeIcon size={17}/>{item.label}</button>})}</div><span className="eyebrow">{current.eyebrow}</span><h1>{current.title}</h1><p className="authLead">{current.description}</p><form className="form authForm" onSubmit={submit}><label>Email address<input required type="email" autoComplete="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder={mode==='admin'?'admin@primestack.dev':'you@company.com'}/></label><label>Password<input required type="password" autoComplete="current-password" value={form.password} onChange={e=>setForm({...form,password:e.target.value})} placeholder="Your password"/></label><div className="authMeta"><span><ShieldCheck size={15}/> Secure sign-in</span><span><Icon size={15}/> {mode==='admin'?'Staff access':'Customer access'}</span></div><button className="btn primary" disabled={loading} type="submit">{loading?'Signing in...':`Sign in as ${mode==='admin'?'Admin':'Customer'}`}<ArrowRight size={18}/></button>{error&&<p className="error" role="alert">{error}</p>}</form>{mode==='customer'?<p className="authSwitch">Don't have an account? <Link to="/register">Create one</Link></p>:<p className="authSwitch">Customer instead? <button type="button" className="authInlineButton" onClick={()=>changeMode('customer')}>Use Customer Login</button></p>}</div>
+      <aside className="authAside"><span className="eyebrow">PRIMESTACK ACCESS</span><h2>{mode==='admin'?'Run your primeStack workspace securely.':'Your primeStack workspace, in one place.'}</h2><p>{mode==='admin'?'Administrator access provides tools for managing products, content, customers and business enquiries.':'Customer access lets you manage your account, products, requests and profile.'}</p><ul>{mode==='admin'?<><li><ShieldCheck/>Manage products and content</li><li><ShieldCheck/>Manage customers and enquiries</li><li><ShieldCheck/>Access the administration dashboard</li></>:<><li><ShieldCheck/>View your products and services</li><li><ShieldCheck/>Track enquiries and requests</li><li><ShieldCheck/>Manage your profile and security</li></>}</ul></aside>
+    </div></div>;
 }
+function NavItem({name,path}) { return <Link to={path}>{name}</Link>; }
