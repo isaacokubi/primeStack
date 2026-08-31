@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {Link,useNavigate} from 'react-router-dom';
 import {ArrowRight,CheckCircle2} from 'lucide-react';
-import {api} from '../services/api.js';
+import api from '../services/api.js';
 
 export default function Register(){
  const [form,setForm]=useState({name:'',email:'',password:'',confirmPassword:''});
