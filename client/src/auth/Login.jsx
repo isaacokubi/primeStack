@@ -1,7 +1,7 @@
 import {useState} from 'react';
 import {Link,useNavigate} from 'react-router-dom';
 import {ArrowRight,ShieldCheck} from 'lucide-react';
-import {api} from '../services/api.js';
+import api from '../services/api.js';
 
 export default function Login(){
  const [form,setForm]=useState({email:'',password:''}); const [error,setError]=useState(''); const [loading,setLoading]=useState(false); const nav=useNavigate();
