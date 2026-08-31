@@ -4,36 +4,10 @@ import InquiryMessage from '../models/InquiryMessage.js';
 
 const router = express.Router();
 
-const Contact =
-  mongoose.models.Contact ||
-  mongoose.model(
-    'Contact',
-    new mongoose.Schema(
-      {
-        name: String,
-        email: String,
-        company: String,
-        phone: String,
-        projectType: String,
-        budget: String,
-        message: String,
-        status: String
-      },
-      { timestamps: true }
-    )
-  );
-
-const User =
-  mongoose.models.User ||
-  mongoose.model(
-    'User',
-    new mongoose.Schema({
-      name: String,
-      email: String,
-      role: String,
-      status: String
-    })
-  );
+// Contact and User are registered by server.js. Do not compile duplicate
+// schemas in this route because ESM dependencies are evaluated before
+// server.js finishes registering its models.
+const getContactModel = () => mongoose.model('Contact');
 
 function requireAuth(req, res, next) {
   if (!req.user) {
@@ -63,6 +37,7 @@ function getUserId(req) {
  */
 router.get('/customer/inquiries', requireAuth, async (req, res) => {
   try {
+    const Contact = getContactModel();
     const email = getUserEmail(req);
 
     const inquiries = await Contact.find({
@@ -121,6 +96,7 @@ router.get('/admin/inquiries', requireAuth, async (req, res) => {
       });
     }
 
+    const Contact = getContactModel();
     const inquiries = await Contact.find({})
       .sort({ updatedAt: -1, createdAt: -1 })
       .lean();
@@ -168,6 +144,7 @@ router.get('/admin/inquiries', requireAuth, async (req, res) => {
  */
 router.get('/:id/messages', requireAuth, async (req, res) => {
   try {
+    const Contact = getContactModel();
     const inquiry = await Contact.findById(req.params.id).lean();
 
     if (!inquiry) {
@@ -193,10 +170,6 @@ router.get('/:id/messages', requireAuth, async (req, res) => {
       .sort({ createdAt: 1 })
       .lean();
 
-    /*
-     * Opening a conversation marks messages from the opposite
-     * party as read.
-     */
     if (isAdmin(req)) {
       await InquiryMessage.updateMany(
         {
@@ -242,6 +215,7 @@ router.get('/:id/messages', requireAuth, async (req, res) => {
  */
 router.post('/:id/messages', requireAuth, async (req, res) => {
   try {
+    const Contact = getContactModel();
     const inquiry = await Contact.findById(req.params.id);
 
     if (!inquiry) {
@@ -297,10 +271,6 @@ router.post('/:id/messages', requireAuth, async (req, res) => {
       readByAdmin: senderType === 'admin'
     });
 
-    /*
-     * Once an admin responds, automatically move a New inquiry
-     * to Contacted.
-     */
     if (senderType === 'admin' && inquiry.status === 'New') {
       inquiry.status = 'Contacted';
       await inquiry.save();
@@ -325,6 +295,7 @@ router.post('/:id/messages', requireAuth, async (req, res) => {
  */
 router.get('/unread/counts', requireAuth, async (req, res) => {
   try {
+    const Contact = getContactModel();
     let result;
 
     if (isAdmin(req)) {
