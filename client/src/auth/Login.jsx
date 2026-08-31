@@ -1,0 +1,9 @@
+import {useState} from 'react';
+import {Link,useNavigate} from 'react-router-dom';
+import {ArrowRight,ShieldCheck} from 'lucide-react';
+import {api} from '../services/api.js';
+
+export default function Login(){
+ const [form,setForm]=useState({email:'',password:''}); const [error,setError]=useState(''); const [loading,setLoading]=useState(false); const nav=useNavigate();
+ const submit=async e=>{e.preventDefault();setError('');setLoading(true);try{const r=await api.post('/auth/login',form);const role=r.data.data.user.role;nav(role==='Customer'?'/dashboard':'/admin')}catch(err){setError(err.response?.data?.message||'Invalid email or password.')}finally{setLoading(false)}};
+ return <div className="authPage"><div className="authPanel"><div className="authBrand"><span className="logo">&lt;/&gt;</span><span>primeStack</span></div><span className="eyebrow">CUSTOMER PORTAL</span><h1>Welcome back.</h1><p className="authLead">Sign in to manage your primeStack account and services.</p><form className="form authForm" onSubmit={submit}><label>Email address<input required type="email" autoComplete="email" value={form.email} onChange={e=>setForm({...form,email:e.target.value})} placeholder="you@company.com"/></label><label>Password<input required type="password" autoComplete="current-password" value={form.password} onChange={e=>setForm({...form,password:e.target.value})} placeholder="Your password"/></label><div className="authMeta"><span><ShieldCheck size={15}/> Secure sign-in</span></div><button className="btn primary" disabled={loading}>{loading?'Signing in...':'Sign in'} <ArrowRight size={18}/></button>{error&&<p className="error">{error}</p>}</form><p className="authSwitch">Don't have an account? <Link to="/register">Create one</Link></p></div></div>
