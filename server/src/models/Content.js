@@ -1,0 +1,11 @@
+import mongoose from 'mongoose';
+const contentSchema = new mongoose.Schema({title:{type:String,required:true},slug:{type:String,unique:true,index:true},description:String,content:String,coverImage:String,category:String,author:String,published:{type:Boolean,default:false},publishedAt:Date,seo:{title:String,description:String,keywords:[String],ogImage:String}},{timestamps:true});
+export const BlogPost=mongoose.model('BlogPost',contentSchema);
+const caseStudySchema=new mongoose.Schema({title:{type:String,required:true},slug:{type:String,unique:true,index:true},customer:String,industry:String,challenge:String,solution:String,technologies:[String],results:String,metrics:[{label:String,value:String}],screenshots:[String],published:{type:Boolean,default:false},seo:contentSchema.obj.seo},{timestamps:true});
+export const CaseStudy=mongoose.model('CaseStudy',caseStudySchema);
+const jobSchema=new mongoose.Schema({title:{type:String,required:true},slug:{type:String,unique:true,index:true},department:String,location:String,employmentType:String,experienceLevel:String,description:String,requirements:[String],responsibilities:[String],published:{type:Boolean,default:true},closed:{type:Boolean,default:false}},{timestamps:true});
+export const Job=mongoose.model('Job',jobSchema);
+const testimonialSchema=new mongoose.Schema({quote:{type:String,required:true},customerName:String,position:String,company:String,photo:String,featured:Boolean},{timestamps:true});
+export const Testimonial=mongoose.model('Testimonial',testimonialSchema);
+const contactSchema=new mongoose.Schema({name:{type:String,required:true},email:{type:String,required:true},company:String,phone:String,projectType:String,budget:String,message:{type:String,required:true},status:{type:String,enum:['New','Contacted','In Progress','Converted','Closed'],default:'New'}},{timestamps:true});
+export const Contact=mongoose.model('Contact',contactSchema);
