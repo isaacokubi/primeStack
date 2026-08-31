@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';import cors from 'cors';import helmet from 'helmet';import cookieParser from 'cookie-parser';import rateLimit from 'express-rate-limit';import mongoose from 'mongoose';import bcrypt from 'bcryptjs';import jwt from 'jsonwebtoken';
+import inquiryConversationRoutes from './routes/inquiryConversation.routes.js';
 
 const app=express();
 const port=Number(process.env.PORT||5000);
@@ -24,6 +25,11 @@ const tokenFor=u=>jwt.sign({id:u._id.toString(),role:u.role},JWT_SECRET,{expires
 const setSession=(res,u)=>res.cookie('ps_token',tokenFor(u),{httpOnly:true,sameSite:process.env.NODE_ENV==='production'?'none':'lax',secure:process.env.COOKIE_SECURE==='true'||process.env.NODE_ENV==='production',maxAge:7*24*60*60*1000,path:'/'});
 const auth=(req,res,next)=>{try{const t=req.cookies.ps_token||String(req.headers.authorization||'').replace(/^Bearer\s+/i,'');if(!t)return fail(res,'Authentication required',401);req.user=jwt.verify(t,JWT_SECRET);next()}catch{return fail(res,'Invalid or expired session',401)}};
 const roles=(...allowed)=>(req,res,next)=>allowed.includes(req.user.role)?next():fail(res,'Insufficient permissions',403);
+
+// PrimeStack inquiry conversations
+// Mounted after authentication/authorization middleware.
+app.use('/api/inquiries', inquiryConversationRoutes);
+
 const emailValid=e=>/^\S+@\S+\.\S+$/.test(String(e||''));
 
 app.get('/',(_q,r)=>ok(r,{name:'primeStack API',version:'2.0.0'}));
