@@ -1,13 +1,12 @@
 # primeStack
 
-A production-oriented MERN software product company website and lightweight content management system, implemented entirely in JavaScript.
+A production-oriented MERN software product company platform with a premium public website, CMS/admin workspace and secure customer portal.
 
 ## Stack
 
 - React 19 + Vite
 - React Router
-- Tailwind-compatible frontend setup + custom responsive design system
-- Framer Motion
+- Framer Motion + Lucide
 - Axios
 - Node.js + Express 5
 - MongoDB + Mongoose
@@ -15,21 +14,42 @@ A production-oriented MERN software product company website and lightweight cont
 - bcrypt password hashing
 - Helmet, CORS and rate limiting
 
-## Features
+## Public platform
 
 - Premium responsive company website
-- Data-driven product catalogue and dynamic product pages
-- Product search, filtering and featured products
+- Product catalogue, search and dynamic product pages
 - Services, About and Technology pages
 - Dynamic Blog, Case Studies and Careers content
-- Contact lead capture and inquiry management
-- Testimonials and newsletter API
-- Admin authentication with Admin/Editor roles
-- Product CRUD from `/admin`
-- Dashboard statistics and contact status management
-- Automatic starter product and admin seeding when MongoDB is connected
-- Production-ready environment configuration
-- Reduced-motion support and accessible form controls
+- Contact lead capture
+- Testimonials and newsletter subscription
+- Privacy, Terms and Security pages
+- Responsive mobile navigation and reduced-motion support
+
+## Customer portal
+
+- Customer registration at `/register`
+- Customer login at `/login`
+- Secure HTTP-only session cookie
+- Customer dashboard at `/dashboard`
+- Product catalogue access
+- Customer enquiry history
+- Account/profile settings at `/dashboard/settings`
+- Password change
+- Role-based API authorization
+
+Customer accounts are always created with the `Customer` role. They cannot access admin APIs.
+
+## Admin platform
+
+- Admin login at `/admin/login`
+- Existing CMS dashboard at `/admin`
+- Admin/Editor role authorization
+- Product CRUD
+- Blog, Case Study and Careers content management
+- Testimonials
+- Contact enquiry management
+- Dashboard statistics
+- Customer count and customer-management API endpoints
 
 ## Local development
 
@@ -39,25 +59,28 @@ cp server/.env.example server/.env
 npm run dev
 ```
 
-Frontend: http://localhost:5173
-API: http://localhost:5000
-Admin: http://localhost:5173/admin/login
+Frontend: http://localhost:5173  
+API: http://localhost:5000  
+Customer registration: http://localhost:5173/register  
+Customer login: http://localhost:5173/login  
+Admin login: http://localhost:5173/admin/login
 
-Default development admin values are controlled by `server/.env`:
+## Environment
 
-```text
-ADMIN_EMAIL=admin@primestack.dev
-ADMIN_PASSWORD=ChangeMe123!
-```
+Configure `server/.env` with MongoDB, JWT and admin credentials. For production, `NODE_ENV=production`, a strong `JWT_SECRET`, `ADMIN_PASSWORD`, HTTPS frontend `CLIENT_URL`, and secure cookies are required. Never commit real secrets.
 
-Change these values before production.
+The frontend API URL is configured with `VITE_API_URL` in `client/.env`.
 
 ## MongoDB
 
-Set `MONGODB_URI` to a MongoDB Atlas connection string for production. The API can start without MongoDB for health checks, but persistent CMS data and automatic seed data require a database connection.
+Set `MONGODB_URI` to a MongoDB Atlas connection string for production. Persistent CMS data, customer accounts and automatic seed data require a database connection.
 
-## Production
+## Production notes
 
-Set a strong `JWT_SECRET`, production `CLIENT_URL`, secure cookies, MongoDB Atlas credentials, and real mail/cloud-media credentials. Never commit `.env` files or secrets.
-
-The public product pages are intentionally data-driven: creating a product through the CMS makes it available at `/products/<slug>` without adding a new React page.
+- Do not use the development JWT secret in production.
+- Use a unique strong admin password.
+- Serve frontend and API over HTTPS.
+- Set `COOKIE_SECURE=true` or run with `NODE_ENV=production`.
+- Set `CLIENT_URL` to the exact production frontend origin(s).
+- Review CORS origins before deployment.
+- Never commit `.env` files, database credentials, JWT secrets or API keys.
