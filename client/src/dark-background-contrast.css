@@ -237,15 +237,38 @@ footer p,
 footer li,
 footer small,
 footer .bottom,
-footer .copyright {
+footer .copyright,
+footer strong,
+footer em,
+footer span,
+footer label,
+footer div,
+footer nav,
+footer ul,
+footer ol {
   color:#4de1c1!important;
+  -webkit-text-fill-color:#4de1c1!important;
+}
+
+/* Catch any footer text element not covered by a component-specific selector. */
+footer * {
+  color:#4de1c1!important;
+  -webkit-text-fill-color:#4de1c1!important;
+}
+
+/* Keep the footer's interactive hover accent while retaining green-blue at rest. */
+footer a:hover,
+footer a:focus-visible,
+footer button:hover,
+footer button:focus-visible {
+  color:#c7f36b!important;
+  -webkit-text-fill-color:#c7f36b!important;
 }
 
 header nav a:hover,
 header nav a.active,
 header .navLogin:hover,
-header .navSignout:hover,
-footer a:hover {
+header .navSignout:hover {
   color:#c7f36b!important;
 }
 
