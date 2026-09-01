@@ -2,6 +2,7 @@ import React from 'react';
 import { createRoot } from 'react-dom/client';
 import { BrowserRouter } from 'react-router-dom';
 import App from './AppNew.jsx';
+import InquiryConversationWidget from './inquiries/InquiryConversationWidget.jsx';
 import './styles.css';
 import './homepage.css';
 import './portal.css';
@@ -27,6 +28,7 @@ createRoot(document.getElementById('root')).render(
   <React.StrictMode>
     <BrowserRouter>
       <App />
+      <InquiryConversationWidget />
     </BrowserRouter>
   </React.StrictMode>,
 );
