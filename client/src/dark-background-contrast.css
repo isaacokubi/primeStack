@@ -224,3 +224,40 @@ footer a:hover { color:#c7f36b!important; }
   outline:2px solid #c7f36b!important;
   outline-offset:3px;
 }
+
+/* Navbar + footer use a softer neutral for easier reading while remaining high-contrast.
+   This intentionally changes only these two site-wide areas. */
+header nav,
+header nav a,
+header .brand,
+header .brand a,
+header .navLogin,
+header .navSignout,
+header .sideSignout,
+footer,
+footer .brand,
+footer .brand p,
+footer h3,
+footer h4,
+footer a,
+footer p,
+footer li,
+footer small,
+footer .bottom,
+footer .copyright {
+  color:#d1d5db!important;
+}
+
+header nav a:hover,
+header nav a.active,
+header .navLogin:hover,
+header .navSignout:hover,
+footer a:hover {
+  color:#c7f36b!important;
+}
+
+/* Keep the green CTA readable because it has a light background. */
+header .navCta,
+header .navCta:hover {
+  color:#07101d!important;
+}
