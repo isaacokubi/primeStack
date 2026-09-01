@@ -15,16 +15,29 @@ export default function CustomerDashboard() {
     setLoading(true);
     setError('');
     try {
-      const response = await api.get('/customer/dashboard');
-      const payload = response?.data?.data;
+      // The dashboard endpoint is intentionally limited for legacy compatibility.
+      // Load the canonical public catalog as well so the workspace count/list matches /products.
+      const [dashboardResponse, catalogResponse] = await Promise.all([
+        api.get('/customer/dashboard'),
+        api.get('/products', { params: { page: 1, limit: 50 } })
+      ]);
+
+      const payload = dashboardResponse?.data?.data;
       if (!payload || !payload.user) throw new Error('The dashboard response is missing account data.');
+
+      const catalog = catalogResponse?.data?.data;
+      const catalogMeta = catalogResponse?.data?.meta || {};
+      const catalogProducts = Array.isArray(catalog) ? catalog : [];
+      const dashboardProducts = Array.isArray(payload.products) ? payload.products : [];
+      const products = catalogProducts.length ? catalogProducts : dashboardProducts;
+
       const normalized = {
         user: payload.user,
         stats: {
-          products: Number(payload.stats?.products ?? payload.products?.length ?? 0),
+          products: Number(catalogMeta.total ?? products.length),
           requests: Number(payload.stats?.requests ?? payload.requests?.length ?? 0),
         },
-        products: Array.isArray(payload.products) ? payload.products : [],
+        products,
         requests: Array.isArray(payload.requests) ? payload.requests : [],
       };
       saveAuthUser(normalized.user);
@@ -71,7 +84,6 @@ export default function CustomerDashboard() {
         <button className="sideLogout" type="button" onClick={logout}><LogOut /><span>Sign out</span></button>
       </aside>
 
-      {/* Use a div here deliberately: the public site's global <main> rules must not affect the portal content. */}
       <div className="customerMain">
         <header className="dashboardHeader">
           <div><span className="eyebrow">CUSTOMER WORKSPACE</span><h1>Good to see you, {firstName}.</h1><p>Manage your products, account and conversations with primeStack.</p></div>
