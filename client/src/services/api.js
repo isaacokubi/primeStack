@@ -86,7 +86,11 @@ export const siteSettingsApi = {
   // Website settings are CMS data, so never allow a browser/proxy cache to
   // return an older founder name, image, navigation or page configuration.
   get: () => api.get('/site-settings', { params: { _ts: Date.now() }, headers: { 'Cache-Control': 'no-cache' } }),
-  update: data => api.put('/site-settings', data),
+  update: async data => {
+    const response = await api.put('/site-settings', data);
+    window.dispatchEvent(new Event('primeStackSiteSettingsChanged'));
+    return response;
+  },
 };
 
 export const productsApi = {
