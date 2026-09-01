@@ -12,6 +12,7 @@ import './customer/CustomerDashboard.css';
 import './admin/admin-sidebar-fix.css';
 import './founder-image-fix.css';
 import './dark-background-contrast.css';
+import './dashboard-light-contrast.css';
 
 const hideDecorativeSvg = (root = document) => {
   root.querySelectorAll('svg').forEach((svg) => {
