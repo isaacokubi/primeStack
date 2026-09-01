@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { MessageCircle, Send, X, RefreshCw, ChevronLeft, CheckCircle2 } from 'lucide-react';
 import { useLocation } from 'react-router-dom';
 import api, { getStoredAuthUser } from '../services/api.js';
@@ -23,6 +23,7 @@ export default function InquiryConversationWidget() {
   const [loading, setLoading] = useState(false);
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
+  const messagesEndRef = useRef(null);
 
   useEffect(() => {
     const syncUser = () => setUser(getStoredAuthUser());
@@ -41,6 +42,12 @@ export default function InquiryConversationWidget() {
     () => inquiries.reduce((sum, inquiry) => sum + Number(inquiry.unreadCount || 0), 0),
     [inquiries]
   );
+
+  const scrollToLatestMessage = useCallback((behavior = 'smooth') => {
+    window.requestAnimationFrame(() => {
+      messagesEndRef.current?.scrollIntoView({ behavior, block: 'end' });
+    });
+  }, []);
 
   const loadInquiries = useCallback(async () => {
     if (!enabled || !user) return;
@@ -96,14 +103,17 @@ export default function InquiryConversationWidget() {
     }
   }, [enabled]);
 
+  useEffect(() => {
+    if (!open || !selectedId || !conversation) return;
+    scrollToLatestMessage('auto');
+  }, [open, selectedId, conversation, scrollToLatestMessage]);
+
   if (!enabled) return null;
 
   const selectInquiry = id => {
     setSelectedId(id);
     setConversation(null);
     setMessage('');
-    // selectedId change triggers the conversation-loading effect. Avoid a
-    // second request here.
   };
 
   const sendMessage = async event => {
@@ -118,6 +128,7 @@ export default function InquiryConversationWidget() {
       setMessage('');
       await loadConversation(selectedId);
       await loadInquiries();
+      scrollToLatestMessage('smooth');
     } catch (err) {
       setError(err.response?.data?.message || 'Unable to send message.');
     } finally {
@@ -213,6 +224,7 @@ export default function InquiryConversationWidget() {
                         <small>{formatDate(item.createdAt)}</small>
                       </div>
                     ))}
+                    <div ref={messagesEndRef} aria-hidden="true" />
                   </div>
 
                   {currentInquiry?.status === 'Closed' ? (
