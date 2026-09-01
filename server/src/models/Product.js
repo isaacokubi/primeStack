@@ -16,7 +16,7 @@ const productSchema = new mongoose.Schema({
   faq: [{ question: String, answer: String }],
   platforms: [String],
   technologies: [String],
-  status: { type: String, enum: ['Live', 'Beta', 'Coming Soon', 'Archived'], default: 'Live' },
+  status: { type: String, enum: ['Live', 'Beta', 'Coming Soon', 'Archived', 'Completed', 'Planning'], default: 'Live' },
   websiteUrl: String,
   documentationUrl: String,
   releaseDate: Date,
