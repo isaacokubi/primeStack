@@ -1,0 +1,173 @@
+/* PrimeStack dashboard light-surface contrast layer.
+   The admin workspace uses a white/light canvas. Force all text on those
+   surfaces to a dark readable colour while leaving the dark sidebar alone. */
+
+/* Main white/light admin workspace */
+.adminProMain,
+.adminProContent,
+.adminProHero,
+.adminProPageHead,
+.adminProKpis,
+.adminProGrid,
+.adminProPanel,
+.adminProForm,
+.adminProLibrary,
+.adminProContacts,
+.adminProToolbar,
+.adminProSearch,
+.adminProKpi,
+.adminProShortcut,
+.adminProSystem,
+.adminProSystemRow,
+.adminProContact,
+.adminProEmpty,
+.adminProFields,
+.adminProFormHead,
+.adminProFormFooter,
+.adminProRow,
+.adminProIdentity,
+.adminProConversation,
+.adminProConversationHead,
+.adminProMessages,
+.adminProMessage,
+.adminProConversationLoading {
+  color:#172033!important;
+}
+
+/* Every text-bearing descendant on white/light dashboard surfaces. */
+.adminProMain h1,
+.adminProMain h2,
+.adminProMain h3,
+.adminProMain h4,
+.adminProMain h5,
+.adminProMain h6,
+.adminProMain p,
+.adminProMain span,
+.adminProMain small,
+.adminProMain strong,
+.adminProMain em,
+.adminProMain label,
+.adminProMain li,
+.adminProMain td,
+.adminProMain th,
+.adminProMain div,
+.adminProMain section,
+.adminProMain article,
+.adminProMain .adminProHero *,
+.adminProMain .adminProPageHead *,
+.adminProMain .adminProPanel *,
+.adminProMain .adminProForm *,
+.adminProMain .adminProLibrary *,
+.adminProMain .adminProContacts *,
+.adminProMain .adminProKpi *,
+.adminProMain .adminProShortcut *,
+.adminProMain .adminProSystem *,
+.adminProMain .adminProContact *,
+.adminProMain .adminProRow *,
+.adminProMain .adminProIdentity * {
+  color:#172033!important;
+  -webkit-text-fill-color:#172033!important;
+}
+
+/* Dashboard navigation/actions on the light canvas. */
+.adminProMain a,
+.adminProMain .adminProView,
+.adminProMain .adminProProfile {
+  color:#145da0!important;
+  -webkit-text-fill-color:#145da0!important;
+}
+
+.adminProMain a:hover,
+.adminProMain .adminProView:hover,
+.adminProMain .adminProProfile:hover {
+  color:#176b42!important;
+  -webkit-text-fill-color:#176b42!important;
+}
+
+/* Primary action buttons intentionally use white text on their purple background. */
+.adminProMain .adminProBtnPrimary,
+.adminProMain .adminProBtnPrimary * {
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+
+/* Secondary light buttons use dark text. */
+.adminProMain .adminProBtn:not(.adminProBtnPrimary),
+.adminProMain .adminProBtn:not(.adminProBtnPrimary) * {
+  color:#172033!important;
+  -webkit-text-fill-color:#172033!important;
+}
+
+/* Inputs/selects/textareas are white, therefore their contents must be dark. */
+.adminProMain input,
+.adminProMain textarea,
+.adminProMain select,
+.adminProMain option,
+.adminProMain input::placeholder,
+.adminProMain textarea::placeholder {
+  color:#172033!important;
+  -webkit-text-fill-color:#172033!important;
+}
+
+.adminProMain input::placeholder,
+.adminProMain textarea::placeholder {
+  color:#6b778c!important;
+  -webkit-text-fill-color:#6b778c!important;
+  opacity:1!important;
+}
+
+/* Status colours retain semantic meaning. */
+.adminProMain .adminProOnline {
+  color:#138a52!important;
+  -webkit-text-fill-color:#138a52!important;
+}
+
+.adminProMain .adminProDelete,
+.adminProMain .adminProContactDelete {
+  color:#b04c59!important;
+  -webkit-text-fill-color:#b04c59!important;
+}
+
+.adminProMain .adminProDelete:hover,
+.adminProMain .adminProContactDelete:hover {
+  color:#8e2634!important;
+  -webkit-text-fill-color:#8e2634!important;
+}
+
+/* Eyebrows/muted metadata remain dark gray rather than white. */
+.adminProMain .adminProEyebrow,
+.adminProMain .adminProKpiLabel,
+.adminProMain .adminProKpi small,
+.adminProMain .adminProShortcut span,
+.adminProMain .adminProSystemRow span,
+.adminProMain .adminProIdentity span,
+.adminProMain .adminProContact span,
+.adminProMain .adminProToolbar,
+.adminProMain .adminProEmpty,
+.adminProMain .adminProConversationHead p,
+.adminProMain .adminProConversationLoading {
+  color:#667085!important;
+  -webkit-text-fill-color:#667085!important;
+}
+
+/* Do not alter the dark admin sidebar or its white text. */
+.adminProSidebar,
+.adminProSidebar * {
+  color:inherit;
+}
+
+/* Light conversation/message surfaces. */
+.adminProConversationHead h2,
+.adminProMessageMeta strong,
+.adminProMessage p,
+.adminProMessage span,
+.adminProMessage strong {
+  color:#172033!important;
+  -webkit-text-fill-color:#172033!important;
+}
+
+/* Focus remains visible on both light and dark surfaces. */
+.adminProMain :focus-visible {
+  outline:2px solid #5b4cf0!important;
+  outline-offset:2px;
+}
