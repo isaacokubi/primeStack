@@ -14,11 +14,7 @@ const formatDate = value => {
 
 export default function InquiryConversationWidget() {
   const location = useLocation();
-  const user = getStoredAuthUser();
-  const isAdmin = ['Admin', 'Editor'].includes(user?.role);
-  const isCustomer = user?.role === 'Customer';
-  const enabled = isAdmin ? location.pathname.startsWith('/admin') : isCustomer && location.pathname.startsWith('/dashboard');
-
+  const [user, setUser] = useState(() => getStoredAuthUser());
   const [open, setOpen] = useState(false);
   const [inquiries, setInquiries] = useState([]);
   const [selectedId, setSelectedId] = useState(null);
@@ -28,16 +24,34 @@ export default function InquiryConversationWidget() {
   const [sending, setSending] = useState(false);
   const [error, setError] = useState('');
 
+  useEffect(() => {
+    const syncUser = () => setUser(getStoredAuthUser());
+    window.addEventListener('primeStackAuthChanged', syncUser);
+    return () => window.removeEventListener('primeStackAuthChanged', syncUser);
+  }, []);
+
+  const isAdmin = ['Admin', 'Editor'].includes(String(user?.role || ''));
+  const isCustomer = String(user?.role || '') === 'Customer';
+  const enabled = isAdmin
+    ? location.pathname.startsWith('/admin')
+    : isCustomer && location.pathname.startsWith('/dashboard');
+
   const listEndpoint = isAdmin ? '/inquiries/admin/inquiries' : '/inquiries/customer/inquiries';
-  const unreadTotal = useMemo(() => inquiries.reduce((sum, inquiry) => sum + Number(inquiry.unreadCount || 0), 0), [inquiries]);
+  const unreadTotal = useMemo(
+    () => inquiries.reduce((sum, inquiry) => sum + Number(inquiry.unreadCount || 0), 0),
+    [inquiries]
+  );
 
   const loadInquiries = useCallback(async () => {
     if (!enabled || !user) return;
     try {
+      setError('');
       const response = await api.get(listEndpoint);
-      setInquiries(response.data?.data || []);
+      setInquiries(Array.isArray(response.data?.data) ? response.data.data : []);
     } catch (err) {
-      if (err.response?.status !== 401) setError(err.response?.data?.message || 'Unable to load inquiries.');
+      if (err.response?.status !== 401) {
+        setError(err.response?.data?.message || 'Unable to load inquiries.');
+      }
     }
   }, [enabled, listEndpoint, user]);
 
@@ -48,7 +62,9 @@ export default function InquiryConversationWidget() {
     try {
       const response = await api.get(`/inquiries/${id}/messages`);
       setConversation(response.data?.data || null);
-      setInquiries(current => current.map(item => item._id === id ? { ...item, unreadCount: 0 } : item));
+      setInquiries(current => current.map(item => (
+        item._id === id ? { ...item, unreadCount: 0 } : item
+      )));
     } catch (err) {
       setError(err.response?.data?.message || 'Unable to load this conversation.');
     } finally {
@@ -75,6 +91,8 @@ export default function InquiryConversationWidget() {
       setOpen(false);
       setSelectedId(null);
       setConversation(null);
+      setInquiries([]);
+      setMessage('');
     }
   }, [enabled]);
 
@@ -84,7 +102,8 @@ export default function InquiryConversationWidget() {
     setSelectedId(id);
     setConversation(null);
     setMessage('');
-    loadConversation(id);
+    // selectedId change triggers the conversation-loading effect. Avoid a
+    // second request here.
   };
 
   const sendMessage = async event => {
