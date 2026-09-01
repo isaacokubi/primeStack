@@ -1,0 +1,226 @@
+/* Global dark-surface contrast layer
+   Rule: text rendered on dark backgrounds must remain white/readable.
+   Accent colours are retained for interactive states and controls. */
+
+body,
+#root,
+main,
+main section,
+main article,
+header,
+footer,
+.adminShell,
+.adminMain,
+.adminHeader,
+.adminSidebar,
+.authPage,
+.authPanel,
+.authAside,
+.card,
+.service,
+.trust,
+.trust > div,
+.cta,
+.newsletter,
+.mockup,
+.pageHead,
+.detailHero,
+.article,
+.adminList,
+.adminForm,
+.statCard,
+.shortcut,
+.loginModeSwitch,
+.profileChip,
+.adminSearch,
+.notice,
+.empty {
+  color:#fff;
+}
+
+/* Dark surfaces: all normal copy is white for reliable contrast. */
+header nav,
+header nav a,
+footer,
+footer a,
+footer p,
+footer li,
+footer small,
+main section,
+main section p,
+main section span,
+main section label,
+main section small,
+main section li,
+main section td,
+main section th,
+main article,
+main article p,
+main article span,
+main article li,
+.card p,
+.service p,
+.trust span,
+.pageHead p,
+.detailHero > p,
+.cta p,
+.newsletter p,
+.newsletter label,
+.newsletter small,
+.adminContent,
+.adminContent p,
+.adminContent span,
+.adminContent small,
+.adminContent label,
+.adminRow span,
+.adminRow p,
+.toolbar,
+.welcomePanel p,
+.pageIntro p,
+.authLead,
+.authMeta,
+.authSwitch,
+.authAside p,
+.authAside li,
+.sideLabel,
+.sideBrand small,
+.sideUser small,
+.siteCustomizer,
+.siteCustomizer p,
+.siteCustomizer small,
+.siteCustomizer label,
+.siteCard,
+.siteCard p,
+.pageEditor,
+.repeatRow,
+.navEditor {
+  color:#fff!important;
+}
+
+/* Headings remain bright white. */
+h1,h2,h3,h4,h5,h6,
+.hero h1,.pageHead h1,.detailHero h1,
+.sectionHead h2,.card h3,.service h3,
+.cta h2,.newsletter h3,
+.authPanel h1,.authAside h2,
+.welcomePanel h1,.pageIntro h1,
+.listHeader h2,.adminForm h2,
+.siteCard h2,.siteCard h3,
+.founderCaption strong {
+  color:#fff!important;
+}
+
+/* Dark navigation/sidebar surfaces. */
+header nav a,
+.adminSidebar .sideNav button,
+.sideSignout,
+.loginModeButton,
+.profileChip,
+.mobileMenu {
+  color:#fff!important;
+}
+
+header nav a:hover,
+header nav a.active,
+.adminSidebar .sideNav button:hover,
+.loginModeButton:hover {
+  color:#fff!important;
+}
+
+/* Inputs/selects/textarea on dark surfaces. */
+input,
+textarea,
+select,
+.adminForm input,
+.adminForm select,
+.adminForm textarea,
+.adminSearch input,
+.newsletter input,
+.siteCustomizer input,
+.siteCustomizer textarea,
+.siteCustomizer select {
+  color:#fff!important;
+  -webkit-text-fill-color:#fff!important;
+}
+
+input::placeholder,
+textarea::placeholder,
+.adminSearch input::placeholder,
+.siteCustomizer input::placeholder,
+.siteCustomizer textarea::placeholder {
+  color:#fff!important;
+  opacity:.78!important;
+}
+
+/* Preserve readable accent/semantic controls where the background is not dark. */
+.primary,
+.navCta,
+.sideNav button.active em,
+.sideNav em {
+  color:#07101d!important;
+}
+
+.secondary,
+.danger,
+.siteSave,
+.siteAdd,
+.btn,
+button {
+  color:#fff;
+}
+
+.primary,
+.navCta {
+  color:#07101d!important;
+}
+
+/* Accent links remain visually distinct but high-contrast. */
+a.learn,
+a.sectionHead > a,
+.authSwitch a,
+.authInlineButton,
+footer a:hover,
+.navLogin:hover {
+  color:#c7f36b!important;
+}
+
+/* Status and badges on dark surfaces. */
+.statusLive,
+.statusBadge,
+.editBadge,
+.pill,
+.eyebrow,
+.hero .eyebrow,
+.productLogo,
+.serviceGrid .service > span,
+.heroTrust span::before {
+  color:#c7f36b!important;
+}
+
+/* Founder presentation uses an opaque dark panel, so every label is white/readable. */
+.mockup .founderCaption,
+.mockup .founderCaption strong,
+.mockup .founderCaption em {
+  color:#fff!important;
+}
+.mockup .founderCaption > span {
+  color:#c7f36b!important;
+}
+
+/* Footer is a dark surface: never allow inherited muted text to become low-contrast. */
+footer .brand,
+footer .brand p,
+footer h3,
+footer h4,
+footer a,
+footer .bottom,
+footer .copyright {
+  color:#fff!important;
+}
+footer a:hover { color:#c7f36b!important; }
+
+/* Accessibility: keyboard focus remains visible against dark surfaces. */
+:focus-visible {
+  outline:2px solid #c7f36b!important;
+  outline-offset:3px;
+}
