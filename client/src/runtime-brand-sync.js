@@ -4,10 +4,6 @@ const BRAND_EVENT = 'primeStackSiteSettingsChanged';
 const SKIP_TAGS = new Set(['SCRIPT', 'STYLE', 'NOSCRIPT', 'TEXTAREA', 'INPUT', 'SELECT', 'OPTION']);
 
 let currentName = '';
-let observer = null;
-let refreshTimer = null;
-
-const escapeRegExp = value => String(value || '').replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
 const replaceText = root => {
   if (!currentName || !root) return;
@@ -23,9 +19,8 @@ const replaceText = root => {
   let node;
   while ((node = walker.nextNode())) nodes.push(node);
 
-  const pattern = /primestack/gi;
   nodes.forEach(textNode => {
-    textNode.nodeValue = textNode.nodeValue.replace(pattern, currentName);
+    textNode.nodeValue = textNode.nodeValue.replace(/primestack/gi, currentName);
   });
 };
 
@@ -44,28 +39,31 @@ const refresh = async () => {
     const settings = response.data?.data;
     if (settings?.name) setBrand(settings.name);
   } catch {
-    // Public pages and the CMS already have their own fallbacks.
+    // The application keeps its own local fallbacks if the CMS API is unavailable.
   }
 };
 
 const start = () => {
   refresh();
-
   window.addEventListener(BRAND_EVENT, refresh);
   window.addEventListener('focus', refresh);
 
-  observer = new MutationObserver(mutations => {
+  const observer = new MutationObserver(mutations => {
     if (!currentName) return;
     mutations.forEach(mutation => {
+      if (mutation.type === 'characterData') replaceText(mutation.target.parentElement);
       mutation.addedNodes.forEach(node => {
         if (node.nodeType === Node.TEXT_NODE) replaceText(node.parentElement);
         else if (node.nodeType === Node.ELEMENT_NODE) replaceText(node);
       });
     });
   });
-  observer.observe(document.body, { childList: true, subtree: true });
 
-  refreshTimer = window.setInterval(refresh, 30000);
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true,
+    characterData: true,
+  });
 };
 
 if (document.readyState === 'loading') {
