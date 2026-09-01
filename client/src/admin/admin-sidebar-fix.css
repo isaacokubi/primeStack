@@ -1,0 +1,117 @@
+/* PrimeStack CMS — sidebar viewport fit fix */
+.adminProSidebar {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  height: 100dvh;
+  min-height: 0;
+  overflow: hidden;
+}
+
+.adminProBrand {
+  flex: 0 0 auto;
+}
+
+.adminProSectionLabel {
+  flex: 0 0 auto;
+}
+
+.adminProNav {
+  flex: 1 1 auto;
+  min-height: 0;
+  overflow-y: auto;
+  overflow-x: hidden;
+  align-content: start;
+  scrollbar-width: thin;
+}
+
+.adminProNav::-webkit-scrollbar {
+  width: 5px;
+}
+
+.adminProNav::-webkit-scrollbar-thumb {
+  background: #303a53;
+  border-radius: 999px;
+}
+
+.adminProSidebarBottom {
+  flex: 0 0 auto;
+  min-height: max-content;
+  padding-bottom: max(4px, env(safe-area-inset-bottom));
+}
+
+.adminProUser {
+  min-width: 0;
+}
+
+.adminProUser > div {
+  min-width: 0;
+}
+
+.adminProUser strong,
+.adminProUser span {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.adminProSignout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 40px;
+}
+
+@media (max-height: 720px) and (min-width: 901px) {
+  .adminProSidebar {
+    padding-top: 12px;
+    padding-bottom: 8px;
+  }
+
+  .adminProBrand {
+    padding-bottom: 12px;
+    margin-bottom: 7px;
+  }
+
+  .adminProSectionLabel {
+    padding-top: 7px;
+    padding-bottom: 5px;
+  }
+
+  .adminProNav {
+    gap: 2px;
+  }
+
+  .adminProNav button {
+    padding-top: 8px;
+    padding-bottom: 8px;
+  }
+
+  .adminProSidebarBottom {
+    padding-top: 9px;
+  }
+
+  .adminProUser {
+    padding: 5px 8px;
+  }
+
+  .adminProSignout {
+    margin-top: 5px;
+    padding: 8px;
+    min-height: 36px;
+  }
+}
+
+@media (max-width: 900px) {
+  .adminProSidebar {
+    position: fixed;
+    inset: 0 auto 0 0;
+    height: 100dvh;
+    max-height: 100dvh;
+    overflow: hidden;
+  }
+
+  .adminProNav {
+    overflow-y: auto;
+  }
+}
