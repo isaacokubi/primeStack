@@ -8,6 +8,7 @@ import './portal.css';
 import './ui-fixes.css';
 import './professional-ui.css';
 import './customer/CustomerDashboard.css';
+import './admin/admin-sidebar-fix.css';
 
 const hideDecorativeSvg = (root = document) => {
   root.querySelectorAll('svg').forEach((svg) => {
