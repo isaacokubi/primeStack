@@ -46,7 +46,9 @@ const run = async () => {
     {
       $set: {
         businessType: 'technology',
-        name: 'primeStack',
+        name: 'stackTeck',
+        founderCompanyName: 'stackTeck',
+        'home.founderCompanyName': 'stackTeck',
         services,
         technologies,
         values,
@@ -69,7 +71,7 @@ const run = async () => {
     { upsert: true, new: true, setDefaultsOnInsert: true }
   );
 
-  console.log('primeStack software content repair complete.');
+  console.log('stackTeck software content repair complete.');
   console.log(`Removed ${staleProductSlugs.length} stale construction products and ${staleContentSlugs.length} stale construction content items.`);
   console.log(`Published ${services.length} software services.`);
   await mongoose.disconnect();
