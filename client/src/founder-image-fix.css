@@ -5,4 +5,5 @@
 .mockup .founderCaption{position:absolute!important;left:20px!important;right:20px!important;bottom:20px!important;display:flex!important;flex-direction:column!important;gap:4px!important;max-width:calc(100% - 40px)!important;padding:12px 14px!important;border-radius:12px!important;background:rgba(7,16,29,.9)!important;backdrop-filter:blur(6px)!important;-webkit-backdrop-filter:blur(6px)!important;color:#fff!important;text-shadow:0 2px 10px rgba(0,0,0,.45)!important;pointer-events:none!important;box-sizing:border-box!important}
 .mockup .founderCaption span{font-size:.68rem!important;letter-spacing:.16em!important;font-weight:700!important;opacity:.8!important}
 .mockup .founderCaption strong{font-size:1.35rem!important;line-height:1.1!important;font-weight:800!important;overflow-wrap:anywhere!important}
+.mockup .founderCaption em{font-size:.82rem!important;line-height:1.25!important;font-style:normal!important;font-weight:600!important;opacity:.78!important;overflow-wrap:anywhere!important}
 .mockup img{display:block}
