@@ -53,6 +53,13 @@ const emailValid = email => /^\S+@\S+\.\S+$/.test(String(email || ''));
 app.use('/api/inquiries', auth, inquiryConversationRoutes);
 
 app.get('/', (_req, res) => ok(res, { name: 'primeStack API', version: '2.0.0' }));
+app.get('/api/health', (_req, res) =>
+  ok(res, {
+    status: 'OK',
+    database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected'
+  })
+);
+
 app.get('/health', (_req, res) => ok(res, { status: 'OK', database: mongoose.connection.readyState === 1 ? 'connected' : 'disconnected' }));
 
 app.post('/api/auth/register', async (req, res) => {
@@ -382,16 +389,6 @@ app.use((error, _req, res, _next) => { console.error(error); return fail(res, er
     if (process.env.MONGODB_URI) await mongoose.connect(process.env.MONGODB_URI);
     await seed();
 
-app.get('/api/health', (_req, res) => {
-  const connected = mongoose.connection.readyState === 1;
-
-  return res.status(connected ? 200 : 503).json({
-    success: connected,
-    status: connected ? 'ok' : 'degraded',
-    database: connected ? 'connected' : 'disconnected',
-    timestamp: new Date().toISOString(),
-  });
-});
 
 
     app.listen(port, '0.0.0.0', () => console.log(`primeStack API listening on ${port}`));
