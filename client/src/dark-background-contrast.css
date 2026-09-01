@@ -38,7 +38,6 @@ footer,
   color:#fff;
 }
 
-/* Dark surfaces: all normal copy is white for reliable contrast. */
 header nav,
 header nav a,
 footer,
@@ -97,7 +96,6 @@ main article li,
   color:#fff!important;
 }
 
-/* Headings remain bright white. */
 h1,h2,h3,h4,h5,h6,
 .hero h1,.pageHead h1,.detailHero h1,
 .sectionHead h2,.card h3,.service h3,
@@ -110,7 +108,6 @@ h1,h2,h3,h4,h5,h6,
   color:#fff!important;
 }
 
-/* Dark navigation/sidebar surfaces. */
 header nav a,
 .adminSidebar .sideNav button,
 .sideSignout,
@@ -127,7 +124,6 @@ header nav a.active,
   color:#fff!important;
 }
 
-/* Inputs/selects/textarea on dark surfaces. */
 input,
 textarea,
 select,
@@ -152,7 +148,6 @@ textarea::placeholder,
   opacity:.78!important;
 }
 
-/* Preserve readable accent/semantic controls where the background is not dark. */
 .primary,
 .navCta,
 .sideNav button.active em,
@@ -174,7 +169,6 @@ button {
   color:#07101d!important;
 }
 
-/* Accent links remain visually distinct but high-contrast. */
 a.learn,
 a.sectionHead > a,
 .authSwitch a,
@@ -184,7 +178,6 @@ footer a:hover,
   color:#c7f36b!important;
 }
 
-/* Status and badges on dark surfaces. */
 .statusLive,
 .statusBadge,
 .editBadge,
@@ -197,7 +190,6 @@ footer a:hover,
   color:#c7f36b!important;
 }
 
-/* Founder presentation uses an opaque dark panel, so every label is white/readable. */
 .mockup .founderCaption,
 .mockup .founderCaption strong,
 .mockup .founderCaption em {
@@ -207,7 +199,6 @@ footer a:hover,
   color:#c7f36b!important;
 }
 
-/* Footer is a dark surface: never allow inherited muted text to become low-contrast. */
 footer .brand,
 footer .brand p,
 footer h3,
@@ -219,14 +210,12 @@ footer .copyright {
 }
 footer a:hover { color:#c7f36b!important; }
 
-/* Accessibility: keyboard focus remains visible against dark surfaces. */
 :focus-visible {
   outline:2px solid #c7f36b!important;
   outline-offset:3px;
 }
 
-/* Navbar + footer: use a light blue/teal family instead of white/gray.
-   This intentionally changes only the font colours in these two site-wide areas. */
+/* Navbar keeps its implemented styling; only its text colour is customized. */
 header nav,
 header nav a,
 header .brand,
@@ -237,6 +226,7 @@ header .sideSignout {
   color:#9bd7ff!important;
 }
 
+/* Footer typography uses a green-blue colour for strong contrast on the dark footer. */
 footer,
 footer .brand,
 footer .brand p,
@@ -248,7 +238,7 @@ footer li,
 footer small,
 footer .bottom,
 footer .copyright {
-  color:#b8f2e6!important;
+  color:#4de1c1!important;
 }
 
 header nav a:hover,
@@ -259,7 +249,6 @@ footer a:hover {
   color:#c7f36b!important;
 }
 
-/* Keep the green CTA readable because it has a light background. */
 header .navCta,
 header .navCta:hover {
   color:#07101d!important;
