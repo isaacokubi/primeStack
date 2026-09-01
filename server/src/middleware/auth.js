@@ -9,13 +9,22 @@ export const requireAuth = async (req, res, next) => {
     }
 
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const user = await User.findById(decoded.id).select('-password').lean();
+    if (!decoded?.id) {
+      return res.status(401).json({ success: false, message: 'Invalid session' });
+    }
 
+    const user = await User.findById(decoded.id).select('-password').lean();
     if (!user || user.status !== 'Active') {
       return res.status(401).json({ success: false, message: 'User not found or inactive' });
     }
 
-    req.user = user;
+    // Keep both forms available. Existing routes use req.user.id while
+    // Mongoose returns the database identifier as req.user._id.
+    req.user = {
+      ...user,
+      id: user._id.toString()
+    };
+
     next();
   } catch {
     return res.status(401).json({ success: false, message: 'Invalid or expired session' });
