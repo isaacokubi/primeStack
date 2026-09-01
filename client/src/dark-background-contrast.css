@@ -1,6 +1,6 @@
 /* Global dark-surface contrast layer
    Rule: text rendered on dark backgrounds must remain white/readable.
-   Accent colours are retained for interactive states and controls. */
+   Light dashboard surfaces are explicitly reset to dark text below. */
 
 body,
 #root,
@@ -197,6 +197,145 @@ footer a:hover,
 }
 .mockup .founderCaption > span {
   color:#c7f36b!important;
+}
+
+/* Dashboard light surfaces: reset inherited white text to a dark, readable tone.
+   These selectors intentionally target content areas and cards used across admin/customer dashboards,
+   while leaving dark navigation/header/sidebar surfaces untouched. */
+.adminMain,
+.adminMain > main,
+.adminMain > section,
+.adminMain .dashboard,
+.adminMain .dashboardPage,
+.adminMain .dashboardContent,
+.adminMain .dashboardMain,
+.adminMain .content,
+.adminMain .contentArea,
+.adminMain .mainContent,
+.adminMain .workspace,
+.adminMain .workspaceContent,
+.adminMain .pageContent,
+.adminMain .overview,
+.adminMain .overviewContent,
+.adminMain .welcomePanel,
+.adminMain .panel,
+.adminMain .whitePanel,
+.adminMain .lightPanel,
+.adminMain .dashboardCard,
+.adminMain .summaryCard,
+.adminMain .metricCard,
+.adminMain .infoCard,
+.adminMain .tableCard,
+.adminMain .dataCard,
+.customerDashboard,
+.customerDashboard .dashboard,
+.customerDashboard .dashboardPage,
+.customerDashboard .dashboardContent,
+.customerDashboard .content,
+.customerDashboard .contentArea,
+.customerDashboard .mainContent,
+.customerDashboard .panel,
+.customerDashboard .dashboardCard,
+.customerDashboard .summaryCard,
+.customerDashboard .metricCard,
+.customerDashboard .infoCard,
+.customerDashboard .tableCard,
+.customerDashboard .dataCard {
+  color:#172033!important;
+}
+
+.adminMain .welcomePanel h1,
+.adminMain .welcomePanel h2,
+.adminMain .welcomePanel h3,
+.adminMain .welcomePanel h4,
+.adminMain .welcomePanel p,
+.adminMain .welcomePanel span,
+.adminMain .welcomePanel strong,
+.adminMain .welcomePanel small,
+.adminMain .panel h1,
+.adminMain .panel h2,
+.adminMain .panel h3,
+.adminMain .panel h4,
+.adminMain .panel p,
+.adminMain .panel span,
+.adminMain .panel strong,
+.adminMain .panel small,
+.adminMain .dashboardCard h1,
+.adminMain .dashboardCard h2,
+.adminMain .dashboardCard h3,
+.adminMain .dashboardCard h4,
+.adminMain .dashboardCard p,
+.adminMain .dashboardCard span,
+.adminMain .dashboardCard strong,
+.adminMain .dashboardCard small,
+.customerDashboard .panel h1,
+.customerDashboard .panel h2,
+.customerDashboard .panel h3,
+.customerDashboard .panel h4,
+.customerDashboard .panel p,
+.customerDashboard .panel span,
+.customerDashboard .panel strong,
+.customerDashboard .panel small {
+  color:#172033!important;
+  -webkit-text-fill-color:#172033!important;
+}
+
+/* Common light cards/containers used by dashboard modules. */
+.adminMain .card,
+.adminMain .statCard,
+.adminMain .shortcut,
+.adminMain .adminList,
+.adminMain .adminForm,
+.adminMain .notice,
+.adminMain .empty,
+.customerDashboard .card,
+.customerDashboard .statCard,
+.customerDashboard .shortcut,
+.customerDashboard .notice,
+.customerDashboard .empty {
+  color:#172033!important;
+}
+
+.adminMain .card h1,.adminMain .card h2,.adminMain .card h3,.adminMain .card h4,.adminMain .card h5,.adminMain .card h6,
+.adminMain .card p,.adminMain .card span,.adminMain .card label,.adminMain .card small,.adminMain .card strong,
+.adminMain .statCard h1,.adminMain .statCard h2,.adminMain .statCard h3,.adminMain .statCard h4,.adminMain .statCard h5,.adminMain .statCard h6,
+.adminMain .statCard p,.adminMain .statCard span,.adminMain .statCard label,.adminMain .statCard small,.adminMain .statCard strong,
+.adminMain .shortcut h1,.adminMain .shortcut h2,.adminMain .shortcut h3,.adminMain .shortcut h4,.adminMain .shortcut p,.adminMain .shortcut span,
+.customerDashboard .card h1,.customerDashboard .card h2,.customerDashboard .card h3,.customerDashboard .card h4,.customerDashboard .card h5,.customerDashboard .card h6,
+.customerDashboard .card p,.customerDashboard .card span,.customerDashboard .card label,.customerDashboard .card small,.customerDashboard .card strong,
+.customerDashboard .statCard h1,.customerDashboard .statCard h2,.customerDashboard .statCard h3,.customerDashboard .statCard h4,.customerDashboard .statCard p,.customerDashboard .statCard span,
+.customerDashboard .shortcut h1,.customerDashboard .shortcut h2,.customerDashboard .shortcut h3,.customerDashboard .shortcut h4,.customerDashboard .shortcut p,.customerDashboard .shortcut span {
+  color:#172033!important;
+  -webkit-text-fill-color:#172033!important;
+}
+
+/* Dashboard light-surface links retain a clear blue/green accent instead of becoming white. */
+.adminMain a,
+.customerDashboard a {
+  color:#145da0!important;
+}
+.adminMain a:hover,
+.customerDashboard a:hover {
+  color:#176b42!important;
+}
+
+/* Inputs on light dashboard surfaces use dark text. */
+.adminMain input,
+.adminMain textarea,
+.adminMain select,
+.customerDashboard input,
+.customerDashboard textarea,
+.customerDashboard select {
+  color:#172033!important;
+  -webkit-text-fill-color:#172033!important;
+}
+
+.adminMain input::placeholder,
+.adminMain textarea::placeholder,
+.customerDashboard input::placeholder,
+.customerDashboard textarea::placeholder {
+  color:#526174!important;
+  opacity:1!important;
 }
 
 footer .brand,
