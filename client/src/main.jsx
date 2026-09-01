@@ -3,6 +3,7 @@ import {createRoot} from 'react-dom/client';
 import {BrowserRouter} from 'react-router-dom';
 import App from './AppNew.jsx';
 import './styles.css';
+import './homepage.css';
 import './portal.css';
 import './ui-fixes.css';
 import './professional-ui.css';
