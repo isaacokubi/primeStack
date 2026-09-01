@@ -13,6 +13,8 @@ const siteSettingsSchema = new mongoose.Schema({
   logoUrl: { type: String, default: '' },
   faviconUrl: { type: String, default: '' },
   founderImageUrl: { type: String, default: '' },
+  founderName: { type: String, default: 'Isaac Ogubi' },
+  founderCompanyName: { type: String, default: 'primeStack' },
   primaryColor: { type: String, default: '#111827' },
   accentColor: { type: String, default: '#2563eb' },
   backgroundColor: { type: String, default: '#ffffff' },
@@ -28,5 +30,24 @@ const siteSettingsSchema = new mongoose.Schema({
   footer: { type: mongoose.Schema.Types.Mixed, default: {} },
   seo: { type: mongoose.Schema.Types.Mixed, default: {} }
 }, O);
+
+siteSettingsSchema.pre('findOneAndUpdate', function syncFounderFields(next) {
+  const update = this.getUpdate() || {};
+  const home = update.home && typeof update.home === 'object' ? { ...update.home } : {};
+  const founderName = String(home.founderName ?? update.founderName ?? '').trim();
+  const founderCompanyName = String(home.founderCompanyName ?? update.founderCompanyName ?? '').trim();
+
+  if (founderName) {
+    home.founderName = founderName;
+    update.founderName = founderName;
+  }
+  if (founderCompanyName) {
+    home.founderCompanyName = founderCompanyName;
+    update.founderCompanyName = founderCompanyName;
+  }
+  if (Object.keys(home).length) update.home = home;
+  this.setUpdate(update);
+  next();
+});
 
 export default mongoose.models.SiteSettings || mongoose.model('SiteSettings', siteSettingsSchema);
