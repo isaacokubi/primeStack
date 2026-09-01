@@ -1,19 +1,17 @@
-/* Runtime-applied dashboard contrast. */
-[data-dashboard-dark-text],
-[data-dashboard-dark-text] * {
+/* Runtime-applied dashboard contrast.
+   The runtime marks each text-bearing element individually, so a dark parent
+   cannot force white text into a nested white/light card. */
+[data-dashboard-dark-text] {
   color:#fff!important;
   -webkit-text-fill-color:#fff!important;
 }
 
-[data-dashboard-dark-text]::placeholder,
-[data-dashboard-dark-text] input::placeholder,
-[data-dashboard-dark-text] textarea::placeholder {
+[data-dashboard-dark-text]::placeholder {
   color:#fff!important;
   -webkit-text-fill-color:#fff!important;
   opacity:.82!important;
 }
 
-/* Keep native controls readable when their own painted surface is dark. */
 [data-dashboard-dark-text] option {
   background:#172033!important;
   color:#fff!important;
