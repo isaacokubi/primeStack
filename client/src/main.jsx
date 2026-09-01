@@ -13,7 +13,9 @@ import './admin/admin-sidebar-fix.css';
 import './founder-image-fix.css';
 import './dark-background-contrast.css';
 import './dashboard-light-contrast.css';
+import './dashboard-contrast-runtime.css';
 import './runtime-brand-sync.js';
+import './dashboard-contrast-runtime.js';
 
 const hideDecorativeSvg = (root = document) => {
   root.querySelectorAll('svg').forEach((svg) => {
