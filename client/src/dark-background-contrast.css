@@ -225,15 +225,18 @@ footer a:hover { color:#c7f36b!important; }
   outline-offset:3px;
 }
 
-/* Navbar + footer use a softer neutral for easier reading while remaining high-contrast.
-   This intentionally changes only these two site-wide areas. */
+/* Navbar + footer: use a light blue/teal family instead of white/gray.
+   This intentionally changes only the font colours in these two site-wide areas. */
 header nav,
 header nav a,
 header .brand,
 header .brand a,
 header .navLogin,
 header .navSignout,
-header .sideSignout,
+header .sideSignout {
+  color:#9bd7ff!important;
+}
+
 footer,
 footer .brand,
 footer .brand p,
@@ -245,7 +248,7 @@ footer li,
 footer small,
 footer .bottom,
 footer .copyright {
-  color:#d1d5db!important;
+  color:#b8f2e6!important;
 }
 
 header nav a:hover,
