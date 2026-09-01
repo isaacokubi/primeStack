@@ -83,7 +83,9 @@ export const authApi = {
 };
 
 export const siteSettingsApi = {
-  get: () => api.get('/site-settings'),
+  // Website settings are CMS data, so never allow a browser/proxy cache to
+  // return an older founder name, image, navigation or page configuration.
+  get: () => api.get('/site-settings', { params: { _ts: Date.now() }, headers: { 'Cache-Control': 'no-cache' } }),
   update: data => api.put('/site-settings', data),
 };
 
