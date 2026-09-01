@@ -7,6 +7,7 @@ import './homepage.css';
 import './portal.css';
 import './ui-fixes.css';
 import './professional-ui.css';
+import './customer/CustomerDashboard.css';
 
 const FOUNDER_IMAGE_KEY = 'primeStack.founderImage';
 
