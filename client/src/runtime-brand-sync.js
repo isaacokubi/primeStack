@@ -30,6 +30,9 @@ const setBrand = name => {
   currentName = normalized;
   document.documentElement.dataset.companyName = normalized;
   document.documentElement.style.setProperty('--site-company-name', JSON.stringify(normalized));
+  document.querySelectorAll('.adminProLogo').forEach(el => {
+    el.textContent = normalized.charAt(0).toUpperCase();
+  });
   replaceText(document.body);
 };
 
