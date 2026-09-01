@@ -1,8 +1,38 @@
-/* PrimeStack dashboard light-surface contrast layer.
-   The admin workspace uses a white/light canvas. Force all text on those
-   surfaces to a dark readable colour while leaving the dark sidebar alone. */
+/* Global dashboard contrast layer.
+   Rule: dark surfaces use white text; white/light surfaces use dark text.
+   The dark sidebar is intentionally excluded. */
 
-/* Main white/light admin workspace */
+/* Light admin top bar and its controls. */
+.adminProTopbar,
+.adminProTopbar .adminProCrumb,
+.adminProTopbar .adminProCrumb small,
+.adminProTopbar .adminProCrumb strong,
+.adminProTopbar .adminProView,
+.adminProTopbar .adminProProfile,
+.adminProTopbar .adminProMenu,
+.adminProTopbar .adminProTopActions {
+  color:#172033!important;
+  -webkit-text-fill-color:#172033!important;
+}
+
+.adminProTopbar svg,
+.adminProTopbar .adminProMenu svg {
+  color:#172033!important;
+  fill:currentColor;
+  stroke:currentColor;
+}
+
+.adminProTopbar .adminProView {
+  color:#145da0!important;
+  -webkit-text-fill-color:#145da0!important;
+}
+
+.adminProTopbar .adminProView:hover {
+  color:#176b42!important;
+  -webkit-text-fill-color:#176b42!important;
+}
+
+/* Main white/light admin workspace. */
 .adminProMain,
 .adminProContent,
 .adminProHero,
@@ -30,7 +60,9 @@
 .adminProConversationHead,
 .adminProMessages,
 .adminProMessage,
-.adminProConversationLoading {
+.adminProConversationLoading,
+.adminProView,
+.adminProProfile {
   color:#172033!important;
 }
 
@@ -69,6 +101,15 @@
   -webkit-text-fill-color:#172033!important;
 }
 
+/* Light topbar/view/profile descendants. */
+.adminProTopbar .adminProCrumb small,
+.adminProTopbar .adminProCrumb strong,
+.adminProTopbar .adminProProfile,
+.adminProTopbar .adminProProfile * {
+  color:#172033!important;
+  -webkit-text-fill-color:#172033!important;
+}
+
 /* Dashboard navigation/actions on the light canvas. */
 .adminProMain a,
 .adminProMain .adminProView,
@@ -84,7 +125,7 @@
   -webkit-text-fill-color:#176b42!important;
 }
 
-/* Primary action buttons intentionally use white text on their purple background. */
+/* Primary action buttons intentionally use white text on purple. */
 .adminProMain .adminProBtnPrimary,
 .adminProMain .adminProBtnPrimary * {
   color:#fff!important;
@@ -98,7 +139,7 @@
   -webkit-text-fill-color:#172033!important;
 }
 
-/* Inputs/selects/textareas are white, therefore their contents must be dark. */
+/* Inputs/selects/textareas are white, therefore their contents are dark. */
 .adminProMain input,
 .adminProMain textarea,
 .adminProMain select,
@@ -150,7 +191,7 @@
   -webkit-text-fill-color:#667085!important;
 }
 
-/* Do not alter the dark admin sidebar or its white text. */
+/* Preserve the dark sidebar and its light text. */
 .adminProSidebar,
 .adminProSidebar * {
   color:inherit;
@@ -167,7 +208,8 @@
 }
 
 /* Focus remains visible on both light and dark surfaces. */
-.adminProMain :focus-visible {
+.adminProMain :focus-visible,
+.adminProTopbar :focus-visible {
   outline:2px solid #5b4cf0!important;
   outline-offset:2px;
 }
