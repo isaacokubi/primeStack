@@ -1,17 +1,165 @@
-import {Routes,Route,Link,NavLink,useParams} from 'react-router-dom';import {motion} from 'framer-motion';import {ArrowRight,Code2,Menu,X,CheckCircle2,Search,Mail} from 'lucide-react';import {useEffect,useState} from 'react';import {productsApi,contentApi,contactApi,testimonialsApi,newsletterApi} from './services/api.js';import Admin from './admin/Admin.jsx';import AdminLogin from './admin/AdminLogin.jsx';
-const site={name:'primeStack',tagline:'We Build Software That Moves Businesses Forward.',description:'We design, build, and operate software products that solve real business problems.',email:import.meta.env.VITE_SITE_EMAIL||'hello@primestack.dev'};
-function Layout({children}){const [open,setOpen]=useState(false);const nav=[['Products','/products'],['Services','/services'],['Case Studies','/case-studies'],['Technology','/technology'],['Blog','/blog'],['Careers','/careers'],['About','/about']];return <><header><Link className="brand" to="/"><span className="logo"><Code2 size={19}/></span>{site.name}</Link><button className="menu" aria-label="Toggle navigation" onClick={()=>setOpen(!open)}>{open?<X/>:<Menu/>}</button><nav className={open?'open':''}>{nav.map(([n,p])=><NavLink key={p} to={p} onClick={()=>setOpen(false)}>{n}</NavLink>)}<Link className="navCta" to="/contact">Work With Us</Link></nav></header><main>{children}</main><footer><div><div className="brand"><span className="logo"><Code2 size={19}/></span>{site.name}</div><p>{site.description}</p><a href={`mailto:${site.email}`}>{site.email}</a></div><div><b>Explore</b><Link to="/products">Products</Link><Link to="/case-studies">Case Studies</Link><Link to="/blog">Resources</Link></div><div><b>Company</b><Link to="/about">About</Link><Link to="/careers">Careers</Link><Link to="/contact">Contact</Link></div><div><b>Legal</b><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><Link to="/security">Security</Link></div></footer></>}
-function Home(){const [products,setProducts]=useState([]),[testimonials,setTestimonials]=useState([]);useEffect(()=>{productsApi.list({featured:true,limit:4}).then(r=>setProducts(r.data.data)).catch(()=>{});testimonialsApi.list({featured:true}).then(r=>setTestimonials(r.data.data.slice(0,3))).catch(()=>{})},[]);return <><section className="hero"><div><span className="eyebrow">SOFTWARE PRODUCT COMPANY</span><h1>{site.tagline}</h1><p>{site.description} From powerful business platforms to intelligent digital products, we create measurable value.</p><div className="actions"><Link className="btn primary" to="/products">Explore Our Products <ArrowRight size={18}/></Link><Link className="btn secondary" to="/contact">Work With Us</Link></div></div><motion.div className="mockup" initial={{opacity:0,y:30}} animate={{opacity:1,y:0}}><div className="mockbar"/><div className="mockgrid"><div/><div/><div/><div/></div></motion.div></section><section className="trust"><div><strong>10+</strong><span>Software Products</span></div><div><strong>50K+</strong><span>Users</span></div><div><strong>99.9%</strong><span>Platform Uptime</span></div><div><strong>8+</strong><span>Years Experience</span></div></section><section><div className="sectionHead"><div><span className="eyebrow">OUR PRODUCTS</span><h2>Software built to matter.</h2></div><Link to="/products">View all <ArrowRight size={16}/></Link></div><ProductGrid products={products}/></section>{testimonials.length>0&&<section><span className="eyebrow">CUSTOMER VOICE</span><h2>Trusted by teams that ship.</h2><div className="grid">{testimonials.map(t=><div className="card" key={t._id}><p className="quote">“{t.quote}”</p><h3>{t.customerName}</h3><p>{[t.position,t.company].filter(Boolean).join(' · ')}</p></div>)}</div></section>}<section className="cta"><span className="eyebrow">BUILD WITH US</span><h2>Have a software idea?</h2><p>Let's turn your complex business challenge into a product people love to use.</p><Link className="btn primary" to="/contact">Start a conversation <ArrowRight size={18}/></Link></section></>}
-function ProductGrid({products}){if(!products?.length)return <div className="empty">Products are managed from the admin dashboard and will appear here.</div>;return <div className="grid">{products.map(p=><Link className="card" to={`/products/${p.slug}`} key={p._id}><div className="productLogo">{p.logo?<img src={p.logo} alt=""/>:<Code2/>}</div><span className="pill">{p.category||'Software'} · {p.status}</span><h3>{p.name}</h3><p>{p.tagline||p.description}</p><span className="learn">Learn more <ArrowRight size={15}/></span></Link>)}</div>}
-function Products(){const [products,setProducts]=useState([]),[search,setSearch]=useState('');useEffect(()=>{const timer=setTimeout(()=>productsApi.list({search}).then(r=>setProducts(r.data.data)).catch(()=>setProducts([])),250);return()=>clearTimeout(timer)},[search]);return <Page title="Products" eyebrow="PRODUCT PORTFOLIO" text="Explore software products designed to simplify work, unlock insight and accelerate growth."><div className="search"><Search/><input aria-label="Search products" placeholder="Search products..." value={search} onChange={e=>setSearch(e.target.value)}/></div><ProductGrid products={products}/></Page>}
-function ProductDetails(){const {slug}=useParams(),[p,setP]=useState(null);useEffect(()=>{productsApi.get(slug).then(r=>setP(r.data.data)).catch(()=>setP(false))},[slug]);if(p===false)return <NotFound/>;if(!p)return <Loading/>;return <><section className="detailHero"><span className="eyebrow">{p.category||'PRODUCT'}</span><h1>{p.name}</h1><h2>{p.tagline}</h2><p>{p.description}</p><div className="actions"><a className="btn primary" href={p.websiteUrl||'/contact'} target={p.websiteUrl?'_blank':undefined} rel="noreferrer">{p.websiteUrl?'Try the Product':'Talk to Sales'} <ArrowRight size={18}/></a>{p.documentationUrl&&<a className="btn secondary" href={p.documentationUrl} target="_blank" rel="noreferrer">Documentation</a>}<Link className="btn secondary" to="/contact">Contact Sales</Link></div></section><section><div className="detailGrid"><div><h2>Built for real business impact.</h2><p>{p.longDescription||p.description}</p>{p.platforms?.length>0&&<><h3>Platforms</h3><p>{p.platforms.join(' · ')}</p></>}{p.technologies?.length>0&&<><h3>Technology</h3><p>{p.technologies.join(' · ')}</p></>}</div><div>{(p.features||[]).map((f,i)=><div className="feature" key={i}><CheckCircle2/><div><h3>{f.title}</h3><p>{f.description}</p></div></div>)}</div></div></section>{p.benefits?.length>0&&<section className="dark"><span className="eyebrow">WHY IT MATTERS</span><h2>Benefits</h2><div className="benefits">{p.benefits.map((x,i)=><div key={i}><CheckCircle2/><span>{x}</span></div>)}</div></section>}</>}
-function Page({title,eyebrow,text,children}){return <><section className="pageHead"><span className="eyebrow">{eyebrow}</span><h1>{title}</h1><p>{text}</p></section><section>{children}</section></>}
-function Services(){const services=['Custom Software Development','Web Application Development','Mobile App Development','AI & Machine Learning','SaaS Development','API & Backend Development','UI/UX Design','Cloud & DevOps','Software Maintenance'];return <Page eyebrow="CAPABILITIES" title="Services" text="From product strategy to scalable infrastructure, we build software around the way your business actually works."><div className="serviceGrid">{services.map((x,i)=><div className="service" key={x}><span>0{i+1}</span><h3>{x}</h3><p>Design and engineering expertise focused on reliable, scalable and measurable outcomes.</p></div>)}</div></Page>}
-function DynamicList({type,title,eyebrow,text,linkPrefix}){const [items,setItems]=useState([]);useEffect(()=>{contentApi.list(type).then(r=>setItems(r.data.data)).catch(()=>setItems([]))},[type]);return <Page title={title} eyebrow={eyebrow} text={text}><div className="grid">{items.map(x=><Link className="card" to={`${linkPrefix}/${x.slug}`} key={x._id}><span className="pill">{x.category||x.industry||x.department||'Featured'}</span><h3>{x.title}</h3><p>{x.description||x.challenge||x.content}</p><span className="learn">Read more <ArrowRight size={15}/></span></Link>)}</div>{!items.length&&<div className="empty">Content will appear here once published from the admin dashboard.</div>}</Page>}
-function DynamicDetail({type}){const {slug}=useParams(),[item,setItem]=useState(null);useEffect(()=>{contentApi.get(type,slug).then(r=>setItem(r.data.data)).catch(()=>setItem(false))},[type,slug]);if(item===false)return <NotFound/>;if(!item)return <Loading/>;return <article className="article"><span className="eyebrow">{item.category||item.industry||item.department||type.toUpperCase()}</span><h1>{item.title}</h1>{item.coverImage&&<img className="articleImage" src={item.coverImage} alt=""/>}<p className="lead">{item.description||item.challenge}</p>{item.challenge&&<><h2>Challenge</h2><p className="articleBody">{item.challenge}</p></>}{item.solution&&<><h2>Solution</h2><p className="articleBody">{item.solution}</p></>}<div className="articleBody">{item.content}</div>{item.results?.length>0&&<><h2>Results</h2><ul>{item.results.map((x,i)=><li key={i}>{x}</li>)}</ul></>}{item.requirements?.length>0&&<><h2>Requirements</h2><ul>{item.requirements.map((x,i)=><li key={i}>{x}</li>)}</ul></>}{item.responsibilities?.length>0&&<><h2>Responsibilities</h2><ul>{item.responsibilities.map((x,i)=><li key={i}>{x}</li>)}</ul></>}</article>}
-function About(){return <Page eyebrow="THE COMPANY" title="We build what comes next." text="primeStack is a software product organization focused on turning complex problems into elegant, dependable digital products."><div className="aboutGrid"><div><h2>Mission</h2><p>To create software that makes complex work simpler, faster, and more accessible.</p></div><div><h2>Values</h2><div className="values">{['Innovation','Quality','Transparency','Security','Customer Focus','Continuous Improvement'].map(x=><span key={x}>{x}</span>)}</div></div></div></Page>}
-function Technology(){return <Page eyebrow="ENGINEERING" title="Technology expertise" text="Modern tools chosen for reliability, performance and maintainability."><div className="techGrid">{['React','JavaScript','Node.js','Express','MongoDB','PostgreSQL','Redis','AWS','Docker','Kubernetes','AI & RAG','CI/CD'].map(x=><div key={x}>{x}</div>)}</div></Page>}
-function Contact(){const [form,setForm]=useState({}),[state,setState]=useState('');const submit=async e=>{e.preventDefault();setState('loading');try{await contactApi.create(form);setState('done');setForm({})}catch{setState('error')}};return <Page eyebrow="LET'S TALK" title="Build something valuable." text="Tell us what you're building, what problem you need to solve, and where you want to go next."><form className="form" onSubmit={submit}>{['name','email','company','phone','budget'].map(x=><input key={x} required={['name','email'].includes(x)} type={x==='email'?'email':'text'} placeholder={x[0].toUpperCase()+x.slice(1)} value={form[x]||''} onChange={e=>setForm({...form,[x]:e.target.value})}/>)}<select value={form.projectType||''} onChange={e=>setForm({...form,projectType:e.target.value})}><option value="">Project type</option>{['Custom Software','Existing Product','Partnership','Support','Sales','Other'].map(x=><option key={x}>{x}</option>)}</select><textarea required placeholder="Tell us about your project..." rows="7" value={form.message||''} onChange={e=>setForm({...form,message:e.target.value})}/><button className="btn primary" disabled={state==='loading'}>{state==='loading'?'Sending...':'Send inquiry'} <ArrowRight size={18}/></button>{state==='done'&&<p className="success">Thanks — your inquiry has been received.</p>}{state==='error'&&<p className="error">Unable to send. Please try again.</p>}</form></Page>}
-function Newsletter(){const [email,setEmail]=useState(''),[state,setState]=useState('');return <div className="newsletter"><div><span className="eyebrow">PRODUCT & ENGINEERING NOTES</span><h3>Get occasional updates.</h3></div><form onSubmit={async e=>{e.preventDefault();setState('loading');try{await newsletterApi.subscribe(email);setState('done');setEmail('')}catch{setState('error')} }}><Mail size={18}/><input type="email" required placeholder="you@company.com" value={email} onChange={e=>setEmail(e.target.value)}/><button className="btn primary" disabled={state==='loading'}>{state==='done'?'Subscribed':'Subscribe'}</button></form>{state==='error'&&<small className="error">Subscription failed. Please try again.</small>}</div>}
-function Loading(){return <div className="loading">Loading...</div>}function NotFound(){return <Page eyebrow="404" title="Page not found" text="The page you're looking for doesn't exist or has moved."><Link className="btn primary" to="/">Back home</Link></Page>}
-export default function App(){return <Layout><Routes><Route path="/" element={<><Home/><section><Newsletter/></section></>}/><Route path="/products" element={<Products/>}/><Route path="/products/:slug" element={<ProductDetails/>}/><Route path="/services" element={<Services/>}/><Route path="/about" element={<About/>}/><Route path="/technology" element={<Technology/>}/><Route path="/case-studies" element={<DynamicList type="case-studies" title="Case studies" eyebrow="PROVEN OUTCOMES" text="Real products, real challenges, measurable results." linkPrefix="/case-studies"/>}/><Route path="/case-studies/:slug" element={<DynamicDetail type="case-studies"/>}/><Route path="/blog" element={<DynamicList type="blog" title="Blog & resources" eyebrow="INSIGHTS" text="Ideas on software, AI, product development and engineering." linkPrefix="/blog"/>}/><Route path="/blog/:slug" element={<DynamicDetail type="blog"/>}/><Route path="/careers" element={<DynamicList type="jobs" title="Careers" eyebrow="JOIN THE TEAM" text="Help us build software people depend on." linkPrefix="/careers"/>}/><Route path="/careers/:slug" element={<DynamicDetail type="jobs"/>}/><Route path="/contact" element={<Contact/>}/><Route path="/privacy" element={<Page eyebrow="LEGAL" title="Privacy policy" text="We collect only information needed to operate this website, respond to inquiries and provide requested services. Contact us for questions or data requests."/>}/><Route path="/terms" element={<Page eyebrow="LEGAL" title="Terms of service" text="Use of this website is subject to applicable law and any terms governing the products or services you purchase. Contact us before relying on this page as a contractual agreement."/>}/><Route path="/security" element={<Page eyebrow="TRUST" title="Security" text="We use access controls, secure authentication, security headers and responsible operational practices. Report suspected security issues through our contact page."/>}/><Route path="/admin/login" element={<AdminLogin/>}/><Route path="/admin" element={<Admin/>}/><Route path="*" element={<NotFound/>}/></Routes></Layout>}
+import { Routes, Route, Link, NavLink, useParams } from 'react-router-dom';
+import { motion } from 'framer-motion';
+import { ArrowRight, Code2, Menu, X, CheckCircle2, Search, Mail } from 'lucide-react';
+import { useEffect, useState } from 'react';
+import { productsApi, contentApi, contactApi, testimonialsApi, newsletterApi, getStoredAuthUser, authApi } from './services/api.js';
+import Admin from './admin/Admin.jsx';
+import AdminLogin from './admin/AdminLogin.jsx';
+import Login from './auth/Login.jsx';
+import Register from './auth/Register.jsx';
+import CustomerDashboard from './customer/CustomerDashboard.jsx';
+import CustomerSettings from './customer/CustomerSettings.jsx';
+
+const site = {
+  name: 'primeStack',
+  tagline: 'We Build Software That Moves Businesses Forward.',
+  description: 'We design, build, and operate software products that solve real business problems.',
+  email: import.meta.env.VITE_SITE_EMAIL || 'hello@primestack.dev'
+};
+
+const publicNav = [
+  ['Products', '/products'],
+  ['Services', '/services'],
+  ['Case Studies', '/case-studies'],
+  ['Technology', '/technology'],
+  ['Blog', '/blog'],
+  ['Careers', '/careers'],
+  ['About', '/about']
+];
+
+function Layout({ children }) {
+  const [open, setOpen] = useState(false);
+  const [user, setUser] = useState(() => getStoredAuthUser());
+
+  useEffect(() => {
+    const syncAuth = () => setUser(getStoredAuthUser());
+    window.addEventListener('primeStackAuthChanged', syncAuth);
+    return () => window.removeEventListener('primeStackAuthChanged', syncAuth);
+  }, []);
+
+  const isAdmin = user && ['Admin', 'Editor'].includes(user.role);
+  const isCustomer = user?.role === 'Customer';
+
+  const logout = async () => {
+    await authApi.logout().catch(() => {});
+    setUser(null);
+    setOpen(false);
+  };
+
+  return (
+    <>
+      <header>
+        <Link className="brand" to="/" onClick={() => setOpen(false)}>
+          <span className="logo"><Code2 size={19} /></span>{site.name}
+        </Link>
+        <button className="menu" aria-label="Toggle navigation" onClick={() => setOpen(!open)}>
+          {open ? <X /> : <Menu />}
+        </button>
+        <nav className={open ? 'open' : ''}>
+          {publicNav.map(([name, path]) => <NavLink key={path} to={path} onClick={() => setOpen(false)}>{name}</NavLink>)}
+          {isAdmin && <Link to="/admin" onClick={() => setOpen(false)}>Admin Dashboard</Link>}
+          {isCustomer && <Link to="/dashboard" onClick={() => setOpen(false)}>My Workspace</Link>}
+          {user ? (
+            <button className="navLogin" type="button" onClick={logout}>Sign out</button>
+          ) : (
+            <Link className="navLogin" to="/login" onClick={() => setOpen(false)}>Sign in</Link>
+          )}
+          <Link className="navCta" to="/contact" onClick={() => setOpen(false)}>Work With Us</Link>
+        </nav>
+      </header>
+      <main>{children}</main>
+      <footer>
+        <div>
+          <div className="brand"><span className="logo"><Code2 size={19} /></span>{site.name}</div>
+          <p>{site.description}</p>
+          <a href={`mailto:${site.email}`}>{site.email}</a>
+        </div>
+        <div><b>Explore</b><Link to="/products">Products</Link><Link to="/case-studies">Case Studies</Link><Link to="/blog">Resources</Link></div>
+        <div><b>Company</b><Link to="/about">About</Link><Link to="/careers">Careers</Link><Link to="/contact">Contact</Link></div>
+        <div><b>Legal</b><Link to="/privacy">Privacy</Link><Link to="/terms">Terms</Link><Link to="/security">Security</Link></div>
+      </footer>
+    </>
+  );
+}
+
+function Home() {
+  const [products, setProducts] = useState([]), [testimonials, setTestimonials] = useState([]);
+  useEffect(() => {
+    productsApi.list({ featured: true, limit: 4 }).then(r => setProducts(r.data.data)).catch(() => {});
+    testimonialsApi.list({ featured: true }).then(r => setTestimonials(r.data.data.slice(0, 3))).catch(() => {});
+  }, []);
+  return <>
+    <section className="hero"><div><span className="eyebrow">SOFTWARE PRODUCT COMPANY</span><h1>{site.tagline}</h1><p>{site.description} From powerful business platforms to intelligent digital products, we create measurable value.</p><div className="actions"><Link className="btn primary" to="/products">Explore Our Products <ArrowRight size={18} /></Link><Link className="btn secondary" to="/contact">Work With Us</Link></div></div><motion.div className="mockup" initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }}><div className="mockbar" /><div className="mockgrid"><div /><div /><div /><div /></div></motion.div></section>
+    <section className="trust"><div><strong>10+</strong><span>Software Products</span></div><div><strong>50K+</strong><span>Users</span></div><div><strong>99.9%</strong><span>Platform Uptime</span></div><div><strong>8+</strong><span>Years Experience</span></div></section>
+    <section><div className="sectionHead"><div><span className="eyebrow">OUR PRODUCTS</span><h2>Software built to matter.</h2></div><Link to="/products">View all <ArrowRight size={16} /></Link></div><ProductGrid products={products} /></section>
+    {testimonials.length > 0 && <section><span className="eyebrow">CUSTOMER VOICE</span><h2>Trusted by teams that ship.</h2><div className="grid">{testimonials.map(t => <div className="card" key={t._id}><p className="quote">“{t.quote}”</p><h3>{t.customerName}</h3><p>{[t.position, t.company].filter(Boolean).join(' · ')}</p></div>)}</div></section>}
+    <section className="cta"><span className="eyebrow">BUILD WITH US</span><h2>Have a software idea?</h2><p>Let's turn your complex business challenge into a product people love to use.</p><Link className="btn primary" to="/contact">Start a conversation <ArrowRight size={18} /></Link></section>
+  </>;
+}
+
+function ProductGrid({ products }) {
+  if (!products?.length) return <div className="empty">Products are managed from the admin dashboard and will appear here.</div>;
+  return <div className="grid">{products.map(p => <Link className="card" to={`/products/${p.slug}`} key={p._id}><div className="productLogo">{p.logo ? <img src={p.logo} alt="" /> : <Code2 />}</div><span className="pill">{p.category || 'Software'} · {p.status}</span><h3>{p.name}</h3><p>{p.tagline || p.description}</p><span className="learn">Learn more <ArrowRight size={15} /></span></Link>)}</div>;
+}
+
+function Products() {
+  const [products, setProducts] = useState([]), [search, setSearch] = useState('');
+  useEffect(() => {
+    const timer = setTimeout(() => productsApi.list({ search }).then(r => setProducts(r.data.data)).catch(() => setProducts([])), 250);
+    return () => clearTimeout(timer);
+  }, [search]);
+  return <Page title="Products" eyebrow="PRODUCT PORTFOLIO" text="Explore software products designed to simplify work, unlock insight and accelerate growth."><div className="search"><Search /><input aria-label="Search products" placeholder="Search products..." value={search} onChange={e => setSearch(e.target.value)} /></div><ProductGrid products={products} /></Page>;
+}
+
+function ProductDetails() {
+  const { slug } = useParams(), [p, setP] = useState(null);
+  useEffect(() => { productsApi.get(slug).then(r => setP(r.data.data)).catch(() => setP(false)); }, [slug]);
+  if (p === false) return <NotFound />;
+  if (!p) return <Loading />;
+  return <><section className="detailHero"><span className="eyebrow">{p.category || 'PRODUCT'}</span><h1>{p.name}</h1><h2>{p.tagline}</h2><p>{p.description}</p><div className="actions"><a className="btn primary" href={p.websiteUrl || '/contact'} target={p.websiteUrl ? '_blank' : undefined} rel="noreferrer">{p.websiteUrl ? 'Try the Product' : 'Talk to Sales'} <ArrowRight size={18} /></a>{p.documentationUrl && <a className="btn secondary" href={p.documentationUrl} target="_blank" rel="noreferrer">Documentation</a>}<Link className="btn secondary" to="/contact">Contact Sales</Link></div></section><section><div className="detailGrid"><div><h2>Built for real business impact.</h2><p>{p.longDescription || p.description}</p>{p.platforms?.length > 0 && <><h3>Platforms</h3><p>{p.platforms.join(' · ')}</p></>}{p.technologies?.length > 0 && <><h3>Technology</h3><p>{p.technologies.join(' · ')}</p></>}</div><div>{(p.features || []).map((f, i) => <div className="feature" key={i}><CheckCircle2 /><div><h3>{f.title}</h3><p>{f.description}</p></div></div>)}</div></div></section>{p.benefits?.length > 0 && <section className="dark"><span className="eyebrow">WHY IT MATTERS</span><h2>Benefits</h2><div className="benefits">{p.benefits.map((x, i) => <div key={i}><CheckCircle2 /><span>{x}</span></div>)}</div></section>}</>;
+}
+
+function Page({ title, eyebrow, text, children }) { return <><section className="pageHead"><span className="eyebrow">{eyebrow}</span><h1>{title}</h1><p>{text}</p></section><section>{children}</section></>; }
+function Services() { const services = ['Custom Software Development', 'Web Application Development', 'Mobile App Development', 'AI & Machine Learning', 'SaaS Development', 'API & Backend Development', 'UI/UX Design', 'Cloud & DevOps', 'Software Maintenance']; return <Page eyebrow="CAPABILITIES" title="Services" text="From product strategy to scalable infrastructure, we build software around the way your business actually works."><div className="serviceGrid">{services.map((x, i) => <div className="service" key={x}><span>0{i + 1}</span><h3>{x}</h3><p>Design and engineering expertise focused on reliable, scalable and measurable outcomes.</p></div>)}</div></Page>; }
+function DynamicList({ type, title, eyebrow, text, linkPrefix }) { const [items, setItems] = useState([]); useEffect(() => { contentApi.list(type).then(r => setItems(r.data.data)).catch(() => setItems([])); }, [type]); return <Page title={title} eyebrow={eyebrow} text={text}><div className="grid">{items.map(x => <Link className="card" to={`${linkPrefix}/${x.slug}`} key={x._id}><span className="pill">{x.category || x.industry || x.department || 'Featured'}</span><h3>{x.title}</h3><p>{x.description || x.challenge || x.content}</p><span className="learn">Read more <ArrowRight size={15} /></span></Link>)}</div>{!items.length && <div className="empty">Content will appear here once published from the admin dashboard.</div>}</Page>; }
+function DynamicDetail({ type }) { const { slug } = useParams(), [item, setItem] = useState(null); useEffect(() => { contentApi.get(type, slug).then(r => setItem(r.data.data)).catch(() => setItem(false)); }, [type, slug]); if (item === false) return <NotFound />; if (!item) return <Loading />; return <article className="article"><span className="eyebrow">{item.category || item.industry || item.department || type.toUpperCase()}</span><h1>{item.title}</h1>{item.coverImage && <img className="articleImage" src={item.coverImage} alt="" />}<p className="lead">{item.description || item.challenge}</p>{item.challenge && <><h2>Challenge</h2><p className="articleBody">{item.challenge}</p></>}{item.solution && <><h2>Solution</h2><p className="articleBody">{item.solution}</p></>}<div className="articleBody">{item.content}</div>{item.results?.length > 0 && <><h2>Results</h2><ul>{item.results.map((x, i) => <li key={i}>{x}</li>)}</ul></>}{item.requirements?.length > 0 && <><h2>Requirements</h2><ul>{item.requirements.map((x, i) => <li key={i}>{x}</li>)}</ul></>}{item.responsibilities?.length > 0 && <><h2>Responsibilities</h2><ul>{item.responsibilities.map((x, i) => <li key={i}>{x}</li>)}</ul></>}</article>; }
+function About() { return <Page eyebrow="THE COMPANY" title="We build what comes next." text="primeStack is a software product organization focused on turning complex problems into elegant, dependable digital products."><div className="aboutGrid"><div><h2>Mission</h2><p>To create software that makes complex work simpler, faster, and more accessible.</p></div><div><h2>Values</h2><div className="values">{['Innovation', 'Quality', 'Transparency', 'Security', 'Customer Focus', 'Continuous Improvement'].map(x => <span key={x}>{x}</span>)}</div></div></div></Page>; }
+function Technology() { return <Page eyebrow="ENGINEERING" title="Technology expertise" text="Modern tools chosen for reliability, performance and maintainability."><div className="techGrid">{['React', 'JavaScript', 'Node.js', 'Express', 'MongoDB', 'PostgreSQL', 'Redis', 'AWS', 'Docker', 'Kubernetes', 'AI & RAG', 'CI/CD'].map(x => <div key={x}>{x}</div>)}</div></Page>; }
+function Contact() { const [form, setForm] = useState({}), [state, setState] = useState(''); const submit = async e => { e.preventDefault(); setState('loading'); try { await contactApi.create(form); setState('done'); setForm({}); } catch { setState('error'); } }; return <Page eyebrow="LET'S TALK" title="Build something valuable." text="Tell us what you're building, what problem you need to solve, and where you want to go next."><form className="form" onSubmit={submit}>{['name', 'email', 'company', 'phone', 'budget'].map(x => <input key={x} required={['name', 'email'].includes(x)} type={x === 'email' ? 'email' : 'text'} placeholder={x[0].toUpperCase() + x.slice(1)} value={form[x] || ''} onChange={e => setForm({ ...form, [x]: e.target.value })} />)}<select value={form.projectType || ''} onChange={e => setForm({ ...form, projectType: e.target.value })}><option value="">Project type</option>{['Custom Software', 'Existing Product', 'Partnership', 'Support', 'Sales', 'Other'].map(x => <option key={x}>{x}</option>)}</select><textarea required placeholder="Tell us about your project..." rows="7" value={form.message || ''} onChange={e => setForm({ ...form, message: e.target.value })} /><button className="btn primary" disabled={state === 'loading'}>{state === 'loading' ? 'Sending...' : 'Send inquiry'} <ArrowRight size={18} /></button>{state === 'done' && <p className="success">Thanks — your inquiry has been received.</p>}{state === 'error' && <p className="error">Unable to send. Please try again.</p>}</form></Page>; }
+function Newsletter() { const [email, setEmail] = useState(''), [state, setState] = useState(''); return <div className="newsletter"><div><span className="eyebrow">PRODUCT & ENGINEERING NOTES</span><h3>Get occasional updates.</h3></div><form onSubmit={async e => { e.preventDefault(); setState('loading'); try { await newsletterApi.subscribe(email); setState('done'); setEmail(''); } catch { setState('error'); } }}><Mail size={18} /><input type="email" required placeholder="you@company.com" value={email} onChange={e => setEmail(e.target.value)} /><button className="btn primary" disabled={state === 'loading'}>{state === 'done' ? 'Subscribed' : 'Subscribe'}</button></form>{state === 'error' && <small className="error">Subscription failed. Please try again.</small>}</div>; }
+function Loading() { return <div className="loading">Loading...</div>; }
+function NotFound() { return <Page eyebrow="404" title="Page not found" text="The page you're looking for doesn't exist or has moved."><Link className="btn primary" to="/">Back home</Link></Page>; }
+
+function PublicRoutes() {
+  return <Layout><Routes>
+    <Route path="/" element={<><Home /><section><Newsletter /></section></>} />
+    <Route path="/products" element={<Products />} />
+    <Route path="/products/:slug" element={<ProductDetails />} />
+    <Route path="/services" element={<Services />} />
+    <Route path="/about" element={<About />} />
+    <Route path="/technology" element={<Technology />} />
+    <Route path="/case-studies" element={<DynamicList type="case-studies" title="Case studies" eyebrow="PROVEN OUTCOMES" text="Real products, real challenges, measurable results." linkPrefix="/case-studies" />} />
+    <Route path="/case-studies/:slug" element={<DynamicDetail type="case-studies" />} />
+    <Route path="/blog" element={<DynamicList type="blog" title="Blog & resources" eyebrow="INSIGHTS" text="Ideas on software, AI, product development and engineering." linkPrefix="/blog" />} />
+    <Route path="/blog/:slug" element={<DynamicDetail type="blog" />} />
+    <Route path="/careers" element={<DynamicList type="jobs" title="Careers" eyebrow="JOIN THE TEAM" text="Help us build software people depend on." linkPrefix="/careers" />} />
+    <Route path="/careers/:slug" element={<DynamicDetail type="jobs" />} />
+    <Route path="/contact" element={<Contact />} />
+    <Route path="/privacy" element={<Page eyebrow="LEGAL" title="Privacy policy" text="We collect only information needed to operate this website, respond to inquiries and provide requested services. Contact us for questions or data requests." />} />
+    <Route path="/terms" element={<Page eyebrow="LEGAL" title="Terms of service" text="Use of this website is subject to applicable law and any terms governing the products or services you purchase. Contact us before relying on this page as a contractual agreement." />} />
+    <Route path="/security" element={<Page eyebrow="TRUST" title="Security" text="We use access controls, secure authentication, security headers and responsible operational practices. Report suspected security issues through our contact page." />} />
+    <Route path="/login" element={<Login />} />
+    <Route path="/register" element={<Register />} />
+    <Route path="/admin/login" element={<AdminLogin />} />
+    <Route path="*" element={<NotFound />} />
+  </Routes></Layout>;
+}
+
+export default function App() {
+  return <Routes>
+    <Route path="/dashboard" element={<CustomerDashboard />} />
+    <Route path="/dashboard/settings" element={<CustomerSettings />} />
+    <Route path="/admin/*" element={<Admin />} />
+    <Route path="*" element={<PublicRoutes />} />
+  </Routes>;
+}
