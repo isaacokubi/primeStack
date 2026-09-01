@@ -1,27 +1,11 @@
 import 'dotenv/config';
 import mongoose from 'mongoose';
 import Product from './models/Product.js';
+import Content from './models/Content.js';
+import Testimonial from './models/Testimonial.js';
 
 const uri = process.env.MONGODB_URI;
 if (!uri) throw new Error('MONGODB_URI is required');
-
-// Keep this schema aligned with server/src/server.js. The public API stores
-// blog posts, case studies and jobs in the shared `contents` collection.
-const contentSchema = new mongoose.Schema({
-  type:{type:String,index:true}, title:{type:String,required:true}, slug:{type:String,index:true},
-  description:String, content:String, category:String, industry:String, department:String,
-  location:String, employmentType:String, experienceLevel:String, challenge:String, solution:String,
-  technologies:[String], results:[String], metrics:[{label:String,value:String}], requirements:[String],
-  responsibilities:[String], coverImage:String, author:String, published:{type:Boolean,default:true},
-  publishedAt:Date, seo:Object
-},{timestamps:true});
-const Content = mongoose.models.Content || mongoose.model('Content', contentSchema);
-
-const testimonialSchema = new mongoose.Schema({
-  quote:{type:String,required:true}, customerName:{type:String,required:true}, position:String,
-  company:String, photo:String, featured:{type:Boolean,default:false}
-},{timestamps:true});
-const Testimonial = mongoose.models.Testimonial || mongoose.model('Testimonial', testimonialSchema);
 
 const products = [
   { name:'AutomateX', slug:'automatex', tagline:'Automate repetitive business workflows.', description:'Automate approvals, notifications, handoffs and recurring business processes from one reliable workspace.', longDescription:'AutomateX helps teams replace repetitive manual work with dependable workflows, clear ownership and measurable automation.', category:'Automation', status:'Live', featured:true, published:true, platforms:['Web','Cloud'], technologies:['React','Node.js','MongoDB'], benefits:['Reduce manual work','Standardize processes','Track every workflow'], features:[{title:'Workflow automation',description:'Build repeatable processes that run consistently.'},{title:'Approvals and notifications',description:'Keep every stakeholder informed at the right time.'}] },
@@ -46,11 +30,14 @@ const testimonials = [
 
 const seed = async () => {
   await mongoose.connect(uri);
-  for (const item of products) await Product.findOneAndUpdate({slug:item.slug}, {$set:item}, {upsert:true, new:true, setDefaultsOnInsert:true});
-  for (const item of content) await Content.findOneAndUpdate({type:item.type,slug:item.slug}, {$set:item}, {upsert:true, new:true, setDefaultsOnInsert:true});
-  for (const item of testimonials) await Testimonial.findOneAndUpdate({quote:item.quote}, {$set:item}, {upsert:true, new:true, setDefaultsOnInsert:true});
+  for (const item of products) await Product.findOneAndUpdate({ slug:item.slug }, { $set:item }, { upsert:true, new:true, setDefaultsOnInsert:true });
+  for (const item of content) await Content.findOneAndUpdate({ type:item.type, slug:item.slug }, { $set:item }, { upsert:true, new:true, setDefaultsOnInsert:true });
+  for (const item of testimonials) await Testimonial.findOneAndUpdate({ quote:item.quote }, { $set:item }, { upsert:true, new:true, setDefaultsOnInsert:true });
   console.log('primeStack content seed complete: 4 products, 2 blog posts, 2 case studies, 2 jobs, 2 testimonials.');
   await mongoose.disconnect();
 };
 
-seed().catch(async error => { console.error(error); try { await mongoose.disconnect(); } finally { process.exit(1); } });
+seed().catch(async error => {
+  console.error(error);
+  try { await mongoose.disconnect(); } finally { process.exit(1); }
+});
