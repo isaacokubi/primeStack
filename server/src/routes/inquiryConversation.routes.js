@@ -1,332 +1,119 @@
 import express from 'express';
 import mongoose from 'mongoose';
 import InquiryMessage from '../models/InquiryMessage.js';
+import Contact from '../models/Contact.js';
 
 const router = express.Router();
 
-// Contact and User are registered by server.js. Do not compile duplicate
-// schemas in this route because ESM dependencies are evaluated before
-// server.js finishes registering its models.
-const getContactModel = () => mongoose.model('Contact');
-
-function requireAuth(req, res, next) {
-  if (!req.user) {
-    return res.status(401).json({
-      success: false,
-      message: 'Authentication required'
-    });
-  }
-
+const requireAuth = (req, res, next) => {
+  if (!req.user) return res.status(401).json({ success: false, message: 'Authentication required' });
   next();
-}
+};
 
-function isAdmin(req) {
-  return ['Admin', 'Editor'].includes(req.user?.role);
-}
+const isAdmin = req => ['Admin', 'Editor'].includes(String(req.user?.role || ''));
+const getUserEmail = req => String(req.user?.email || '').trim().toLowerCase();
+const getUserId = req => req.user?.id || req.user?._id || req.user?.userId || null;
+const ownsInquiry = (req, inquiry) => getUserEmail(req) === String(inquiry?.email || '').trim().toLowerCase();
 
-function getUserEmail(req) {
-  return String(req.user?.email || '').trim().toLowerCase();
-}
+const withUnreadCount = async (inquiries, senderType, readField) => {
+  if (!inquiries.length) return [];
+  const unread = await InquiryMessage.aggregate([
+    { $match: { inquiry: { $in: inquiries.map(item => item._id) }, senderType, [readField]: false } },
+    { $group: { _id: '$inquiry', count: { $sum: 1 } } }
+  ]);
+  const map = new Map(unread.map(item => [String(item._id), item.count]));
+  return inquiries.map(inquiry => ({ ...inquiry, unreadCount: map.get(String(inquiry._id)) || 0 }));
+};
 
-function getUserId(req) {
-  return req.user?.id || req.user?._id || req.user?.userId || null;
-}
-
-/*
- * GET CUSTOMER INQUIRIES
- */
 router.get('/customer/inquiries', requireAuth, async (req, res) => {
   try {
-    const Contact = getContactModel();
-    const email = getUserEmail(req);
-
-    const inquiries = await Contact.find({
-      email
-    })
-      .sort({ updatedAt: -1, createdAt: -1 })
-      .lean();
-
-    const ids = inquiries.map(i => i._id);
-
-    const unread = await InquiryMessage.aggregate([
-      {
-        $match: {
-          inquiry: { $in: ids },
-          senderType: 'admin',
-          readByCustomer: false
-        }
-      },
-      {
-        $group: {
-          _id: '$inquiry',
-          count: { $sum: 1 }
-        }
-      }
-    ]);
-
-    const unreadMap = new Map(
-      unread.map(item => [String(item._id), item.count])
-    );
-
-    res.json({
-      success: true,
-      data: inquiries.map(inquiry => ({
-        ...inquiry,
-        unreadCount: unreadMap.get(String(inquiry._id)) || 0
-      }))
-    });
+    const inquiries = await Contact.find({ email: getUserEmail(req) }).sort({ updatedAt: -1, createdAt: -1 }).lean();
+    return res.json({ success: true, data: await withUnreadCount(inquiries, 'admin', 'readByCustomer') });
   } catch (error) {
     console.error('Customer inquiries error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Unable to load inquiries'
-    });
+    return res.status(500).json({ success: false, message: 'Unable to load inquiries', error: process.env.NODE_ENV === 'production' ? undefined : error.message });
   }
 });
 
-/*
- * GET ADMIN INQUIRIES
- */
 router.get('/admin/inquiries', requireAuth, async (req, res) => {
   try {
-    if (!isAdmin(req)) {
-      return res.status(403).json({
-        success: false,
-        message: 'Admin access required'
-      });
-    }
-
-    const Contact = getContactModel();
-    const inquiries = await Contact.find({})
-      .sort({ updatedAt: -1, createdAt: -1 })
-      .lean();
-
-    const ids = inquiries.map(i => i._id);
-
-    const unread = await InquiryMessage.aggregate([
-      {
-        $match: {
-          inquiry: { $in: ids },
-          senderType: 'customer',
-          readByAdmin: false
-        }
-      },
-      {
-        $group: {
-          _id: '$inquiry',
-          count: { $sum: 1 }
-        }
-      }
-    ]);
-
-    const unreadMap = new Map(
-      unread.map(item => [String(item._id), item.count])
-    );
-
-    res.json({
-      success: true,
-      data: inquiries.map(inquiry => ({
-        ...inquiry,
-        unreadCount: unreadMap.get(String(inquiry._id)) || 0
-      }))
-    });
+    if (!isAdmin(req)) return res.status(403).json({ success: false, message: 'Admin access required' });
+    const inquiries = await Contact.find({}).sort({ updatedAt: -1, createdAt: -1 }).lean();
+    return res.json({ success: true, data: await withUnreadCount(inquiries, 'customer', 'readByAdmin') });
   } catch (error) {
     console.error('Admin inquiries error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Unable to load inquiries'
-    });
+    return res.status(500).json({ success: false, message: 'Unable to load inquiries', error: process.env.NODE_ENV === 'production' ? undefined : error.message });
   }
 });
 
-/*
- * GET CONVERSATION
- */
 router.get('/:id/messages', requireAuth, async (req, res) => {
   try {
-    const Contact = getContactModel();
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(400).json({ success: false, message: 'Invalid inquiry ID' });
     const inquiry = await Contact.findById(req.params.id).lean();
+    if (!inquiry) return res.status(404).json({ success: false, message: 'Inquiry not found' });
+    if (!isAdmin(req) && !ownsInquiry(req, inquiry)) return res.status(403).json({ success: false, message: 'You do not have access to this conversation' });
 
-    if (!inquiry) {
-      return res.status(404).json({
-        success: false,
-        message: 'Inquiry not found'
-      });
-    }
-
-    const customerOwnsInquiry =
-      getUserEmail(req) === String(inquiry.email || '').toLowerCase();
-
-    if (!isAdmin(req) && !customerOwnsInquiry) {
-      return res.status(403).json({
-        success: false,
-        message: 'You do not have access to this conversation'
-      });
-    }
-
-    const messages = await InquiryMessage.find({
-      inquiry: inquiry._id
-    })
-      .sort({ createdAt: 1 })
-      .lean();
-
-    if (isAdmin(req)) {
-      await InquiryMessage.updateMany(
-        {
-          inquiry: inquiry._id,
-          senderType: 'customer',
-          readByAdmin: false
-        },
-        {
-          $set: { readByAdmin: true }
-        }
-      );
-    } else {
-      await InquiryMessage.updateMany(
-        {
-          inquiry: inquiry._id,
-          senderType: 'admin',
-          readByCustomer: false
-        },
-        {
-          $set: { readByCustomer: true }
-        }
-      );
-    }
-
-    res.json({
-      success: true,
-      data: {
-        inquiry,
-        messages
-      }
-    });
+    const messages = await InquiryMessage.find({ inquiry: inquiry._id }).sort({ createdAt: 1 }).lean();
+    await InquiryMessage.updateMany(
+      { inquiry: inquiry._id, senderType: isAdmin(req) ? 'customer' : 'admin', [isAdmin(req) ? 'readByAdmin' : 'readByCustomer']: false },
+      { $set: { [isAdmin(req) ? 'readByAdmin' : 'readByCustomer']: true } }
+    );
+    return res.json({ success: true, data: { inquiry, messages } });
   } catch (error) {
     console.error('Conversation fetch error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Unable to load conversation'
-    });
+    return res.status(500).json({ success: false, message: 'Unable to load conversation', error: process.env.NODE_ENV === 'production' ? undefined : error.message });
   }
 });
 
-/*
- * SEND MESSAGE
- */
 router.post('/:id/messages', requireAuth, async (req, res) => {
   try {
-    const Contact = getContactModel();
+    if (!mongoose.Types.ObjectId.isValid(req.params.id)) return res.status(400).json({ success: false, message: 'Invalid inquiry ID' });
     const inquiry = await Contact.findById(req.params.id);
+    if (!inquiry) return res.status(404).json({ success: false, message: 'Inquiry not found' });
 
-    if (!inquiry) {
-      return res.status(404).json({
-        success: false,
-        message: 'Inquiry not found'
-      });
-    }
+    const messageText = String(req.body?.message || '').trim();
+    if (!messageText) return res.status(400).json({ success: false, message: 'Message is required' });
+    if (messageText.length > 5000) return res.status(400).json({ success: false, message: 'Message cannot exceed 5000 characters' });
 
-    const message = String(req.body?.message || '').trim();
+    const adminSender = isAdmin(req);
+    if (!adminSender && !ownsInquiry(req, inquiry)) return res.status(403).json({ success: false, message: 'You do not have access to this conversation' });
+    if (!adminSender && inquiry.status === 'Closed') return res.status(409).json({ success: false, message: 'This conversation is closed. Please contact the primeStack team to reopen it.' });
 
-    if (!message) {
-      return res.status(400).json({
-        success: false,
-        message: 'Message is required'
-      });
-    }
-
-    if (message.length > 5000) {
-      return res.status(400).json({
-        success: false,
-        message: 'Message cannot exceed 5000 characters'
-      });
-    }
-
-    const customerOwnsInquiry =
-      getUserEmail(req) === String(inquiry.email || '').toLowerCase();
-
-    if (!isAdmin(req) && !customerOwnsInquiry) {
-      return res.status(403).json({
-        success: false,
-        message: 'You do not have access to this conversation'
-      });
-    }
-
-    const senderType = isAdmin(req) ? 'admin' : 'customer';
-
-    const senderName =
-      req.user?.name ||
-      (isAdmin(req) ? 'PrimeStack Admin' : inquiry.name);
-
-    const sender = getUserId(req);
-
+    const senderId = getUserId(req);
     const newMessage = await InquiryMessage.create({
       inquiry: inquiry._id,
-      senderType,
-      sender: sender && mongoose.Types.ObjectId.isValid(sender)
-        ? sender
-        : null,
-      senderName,
-      message,
-      readByCustomer: senderType === 'customer',
-      readByAdmin: senderType === 'admin'
+      senderType: adminSender ? 'admin' : 'customer',
+      sender: senderId && mongoose.Types.ObjectId.isValid(senderId) ? senderId : null,
+      senderName: req.user?.name || (adminSender ? 'PrimeStack Admin' : inquiry.name),
+      message: messageText,
+      readByCustomer: !adminSender,
+      readByAdmin: adminSender
     });
 
-    if (senderType === 'admin' && inquiry.status === 'New') {
-      inquiry.status = 'Contacted';
-      await inquiry.save();
-    }
+    if (adminSender && inquiry.status === 'New') inquiry.status = 'Contacted';
+    if (!adminSender && inquiry.status === 'Contacted') inquiry.status = 'In Progress';
+    inquiry.updatedAt = new Date();
+    await inquiry.save();
 
-    res.status(201).json({
-      success: true,
-      message: 'Message sent',
-      data: newMessage
-    });
+    return res.status(201).json({ success: true, message: 'Message sent', data: newMessage, inquiry: { id: inquiry._id, status: inquiry.status } });
   } catch (error) {
     console.error('Send inquiry message error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Unable to send message'
-    });
+    return res.status(500).json({ success: false, message: 'Unable to send message', error: process.env.NODE_ENV === 'production' ? undefined : error.message });
   }
 });
 
-/*
- * UNREAD TOTALS
- */
 router.get('/unread/counts', requireAuth, async (req, res) => {
   try {
-    const Contact = getContactModel();
-    let result;
-
     if (isAdmin(req)) {
-      result = await InquiryMessage.countDocuments({
-        senderType: 'customer',
-        readByAdmin: false
-      });
-    } else {
-      const inquiries = await Contact.find({
-        email: getUserEmail(req)
-      }).select('_id');
-
-      result = await InquiryMessage.countDocuments({
-        inquiry: { $in: inquiries.map(i => i._id) },
-        senderType: 'admin',
-        readByCustomer: false
-      });
+      const unreadCount = await InquiryMessage.countDocuments({ senderType: 'customer', readByAdmin: false });
+      return res.json({ success: true, data: { unreadCount } });
     }
-
-    res.json({
-      success: true,
-      data: {
-        unreadCount: result
-      }
-    });
+    const inquiries = await Contact.find({ email: getUserEmail(req) }).select('_id').lean();
+    const unreadCount = await InquiryMessage.countDocuments({ inquiry: { $in: inquiries.map(item => item._id) }, senderType: 'admin', readByCustomer: false });
+    return res.json({ success: true, data: { unreadCount } });
   } catch (error) {
     console.error('Unread count error:', error);
-    res.status(500).json({
-      success: false,
-      message: 'Unable to load unread count'
-    });
+    return res.status(500).json({ success: false, message: 'Unable to load unread count' });
   }
 });
 
