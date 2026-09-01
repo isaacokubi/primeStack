@@ -5,7 +5,7 @@ const O = { timestamps: true };
 const siteSettingsSchema = new mongoose.Schema({
   key: { type: String, unique: true, default: 'site' },
   businessType: { type: String, default: 'technology' },
-  name: { type: String, default: 'primeStack' },
+  name: { type: String, default: 'stackTeck' },
   tagline: { type: String, default: 'Software that moves your business forward.' },
   description: { type: String, default: 'We design, build and operate dependable software products that solve complex business problems and create measurable value.' },
   email: { type: String, default: 'hello@primestack.dev' },
@@ -14,7 +14,7 @@ const siteSettingsSchema = new mongoose.Schema({
   faviconUrl: { type: String, default: '' },
   founderImageUrl: { type: String, default: '' },
   founderName: { type: String, default: 'Isaac Ogubi' },
-  founderCompanyName: { type: String, default: 'primeStack' },
+  founderCompanyName: { type: String, default: 'stackTeck' },
   primaryColor: { type: String, default: '#111827' },
   accentColor: { type: String, default: '#2563eb' },
   backgroundColor: { type: String, default: '#ffffff' },
