@@ -381,7 +381,20 @@ app.use((error, _req, res, _next) => { console.error(error); return fail(res, er
   try {
     if (process.env.MONGODB_URI) await mongoose.connect(process.env.MONGODB_URI);
     await seed();
-    app.listen(port, () => console.log(`primeStack API listening on ${port}`));
+
+app.get('/api/health', (_req, res) => {
+  const connected = mongoose.connection.readyState === 1;
+
+  return res.status(connected ? 200 : 503).json({
+    success: connected,
+    status: connected ? 'ok' : 'degraded',
+    database: connected ? 'connected' : 'disconnected',
+    timestamp: new Date().toISOString(),
+  });
+});
+
+
+    app.listen(port, '0.0.0.0', () => console.log(`primeStack API listening on ${port}`));
   } catch (error) {
     console.error('Startup failed:', error);
     process.exit(1);
