@@ -30,11 +30,27 @@ export { api };
 export default api;
 
 export const authApi = {
-  login: async data => { const r = await api.post('/auth/login', data); saveAuthUser(r.data?.data?.user); return r; },
-  register: async data => { const r = await api.post('/auth/register', data); saveAuthUser(r.data?.data?.user); return r; },
-  me: () => api.get('/auth/me'),
-  logout: async () => { try { return await api.post('/auth/logout'); } finally { clearAuthUser(); } },
-  profile: data => api.put('/auth/profile', data),
+  login: async data => { const r = await api.post('/auth/login', data); saveAuthUser(r.data?.data?.user); window.dispatchEvent(new Event('primeStackAuthChanged')); return r; },
+  register: async data => { const r = await api.post('/auth/register', data); saveAuthUser(r.data?.data?.user); window.dispatchEvent(new Event('primeStackAuthChanged')); return r; },
+  me: async () => {
+    try {
+      const r = await api.get('/auth/me');
+      const user = r.data?.data?.user;
+      if (user) saveAuthUser(user);
+      return r;
+    } catch (error) {
+      // A public page must not erase a valid-looking local session merely
+      // because its background session check failed. Protected dashboards
+      // perform the authoritative check when they load protected data.
+      if (error.response?.status === 401) {
+        const stored = getStoredAuthUser();
+        if (stored) return { data: { success: true, data: { user: stored }, fromStoredSession: true } };
+      }
+      throw error;
+    }
+  },
+  logout: async () => { try { return await api.post('/auth/logout'); } finally { clearAuthUser(); window.dispatchEvent(new Event('primeStackAuthChanged')); } },
+  profile: async data => { const r = await api.put('/auth/profile', data); saveAuthUser(r.data?.data?.user); window.dispatchEvent(new Event('primeStackAuthChanged')); return r; },
 };
 
 export const productsApi = { list: (params = {}) => api.get('/products', { params }), get: slug => api.get(`/products/${slug}`) };
