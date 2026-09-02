@@ -59,6 +59,10 @@ export const authApi = {
   },
 
   me: async () => {
+    // Public pages do not need to make an authenticated request when there
+    // is no cached session. This avoids an expected 401 on every page load.
+    if (!getStoredAuthUser()) return { data: { success: true, data: { user: null } } };
+
     const response = await api.get('/auth/me');
     const user = response.data?.data?.user;
     if (user) saveAuthUser(user);
@@ -83,9 +87,10 @@ export const authApi = {
 };
 
 export const siteSettingsApi = {
-  // Website settings are CMS data, so never allow a browser/proxy cache to
-  // return an older founder name, image, navigation or page configuration.
-  get: () => api.get('/site-settings', { params: { _ts: Date.now() }, headers: { 'Cache-Control': 'no-cache' } }),
+  // Use a timestamp query parameter for freshness without sending a custom
+  // Cache-Control request header, which would trigger an avoidable CORS
+  // preflight against APIs that do not allow that request header.
+  get: () => api.get('/site-settings', { params: { _ts: Date.now() } }),
   update: async data => {
     const response = await api.put('/site-settings', data);
     window.dispatchEvent(new Event('primeStackSiteSettingsChanged'));
