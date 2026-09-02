@@ -19,6 +19,7 @@ import './dark-background-contrast.css';
 import './dashboard-light-contrast.css';
 import './dashboard-contrast-runtime.js';
 import './runtime-brand-sync.js';
+import './product-media-runtime.js';
 import './admin/admin-complete-runtime.js';
 
 const hideDecorativeSvg = (root = document) => {
