@@ -38,6 +38,11 @@ const siteDefaults = {
 };
 
 async function run() {
+  if (process.env.NODE_ENV === 'production' && process.env.ALLOW_PRODUCTION_SEED !== 'true') {
+    console.log('Production seed skipped. CMS-managed content and media are protected.');
+    return;
+  }
+
   const uri = process.env.MONGODB_URI;
   if (!uri) throw new Error('MONGODB_URI must be configured');
   await mongoose.connect(uri);
