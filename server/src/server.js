@@ -19,15 +19,56 @@ import { requireAuth, requireRole } from './middleware/auth.js';
 
 const app = express();
 const port = Number(process.env.PORT || 5000);
-const clientUrl = (process.env.CLIENT_URL || 'http://localhost:5173').split(',').map(x => x.trim()).filter(Boolean);
+const allowedOrigins = (
+  process.env.CLIENT_URL ||
+  'http://localhost:5173'
+)
+  .split(',')
+  .map(url => url.trim())
+  .filter(Boolean);
+
+const isAllowedOrigin = (origin) => {
+  if (!origin) return true;
+
+  if (allowedOrigins.includes(origin)) {
+    return true;
+  }
+
+  try {
+    const hostname = new URL(origin).hostname;
+
+    if (hostname.endsWith('.onrender.com')) return true;
+    if (hostname.endsWith('.vercel.app')) return true;
+    if (hostname === 'localhost') return true;
+    if (hostname === '127.0.0.1') return true;
+  } catch {
+    return false;
+  }
+
+  return false;
+};
+
 const JWT_SECRET = process.env.JWT_SECRET || (process.env.NODE_ENV === 'production' ? null : 'development-only-secret-change-me');
 if (!JWT_SECRET) throw new Error('JWT_SECRET must be configured in production');
 
 app.set('trust proxy', 1);
 app.use(helmet());
 app.use(cors({
-  origin: (origin, callback) => !origin || clientUrl.includes(origin) ? callback(null, true) : callback(new Error('CORS origin denied')),
-  credentials: true
+  origin(origin, callback) {
+    if (isAllowedOrigin(origin)) {
+      return callback(null, true);
+    }
+
+    console.warn(`Blocked CORS origin: ${origin}`);
+    return callback(new Error('CORS origin denied'));
+  },
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+  allowedHeaders: [
+    'Content-Type',
+    'Authorization',
+    'X-Requested-With'
+  ]
 }));
 app.use(express.json({ limit: '3mb' }));
 app.use(express.urlencoded({ extended: true, limit: '3mb' }));
