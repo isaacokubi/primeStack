@@ -76,7 +76,7 @@ app.post('/api/auth/register', async (req, res) => {
     if (password.length < 8) return fail(res, 'Password must be at least 8 characters');
     if (await User.exists({ email })) return fail(res, 'An account with this email already exists', 409);
     const user = await User.create({ name, email, password: await bcrypt.hash(password, 12), role: 'Customer' });
-    setSession(res, user); return ok(res, { user: publicUser(user) }, 'Account created', null, 201);
+    const token = tokenFor(user); setSession(res, user); return ok(res, { user: publicUser(user), token }, 'Account created', null, 201);
   } catch (error) { return fail(res, error.code === 11000 ? 'An account with this email already exists' : error.message, 500); }
 });
 
@@ -85,7 +85,7 @@ app.post('/api/auth/login', async (req, res) => {
     const email = String(req.body?.email || '').toLowerCase().trim(); const password = String(req.body?.password || '');
     const user = await User.findOne({ email }).select('+password');
     if (!user || user.status !== 'Active' || !(await bcrypt.compare(password, user.password))) return fail(res, 'Invalid email or password', 401);
-    user.lastLoginAt = new Date(); await user.save(); setSession(res, user); return ok(res, { user: publicUser(user) }, 'Signed in');
+    user.lastLoginAt = new Date(); await user.save(); const token = tokenFor(user); setSession(res, user); return ok(res, { user: publicUser(user), token }, 'Signed in');
   } catch (error) { return fail(res, error.message, 500); }
 });
 app.post('/api/auth/logout', (_req, res) => { res.clearCookie('ps_token', { httpOnly: true, sameSite: process.env.NODE_ENV === 'production' ? 'none' : 'lax', secure: process.env.COOKIE_SECURE === 'true' || process.env.NODE_ENV === 'production', path: '/' }); return ok(res, null, 'Signed out'); });
@@ -141,8 +141,8 @@ for (const type of ['blog', 'case-studies', 'jobs']) {
   app.get(`/api/${type}`, async (_req, res) => { try { const content = await Content.find({ type, published: true }).sort({ publishedAt: -1, createdAt: -1 }).lean(); return ok(res, content); } catch (error) { return fail(res, error.message, 500); } });
   app.get(`/api/${type}/:slug`, async (req, res) => { const content = await Content.findOne({ type, slug: req.params.slug, published: true }).lean(); return content ? ok(res, content) : fail(res, 'Content not found', 404); });
   app.post(`/api/${type}`, auth, roles('Admin', 'Editor'), async (req, res) => { try { const content = await Content.create({ ...req.body, type, slug: slugify(req.body.slug || req.body.title), publishedAt: req.body.publishedAt || new Date() }); return ok(res, content, 'Created', null, 201); } catch (error) { return fail(res, error.message); } });
-  app.put(`/api/${type}/:id`, auth, roles('Admin', 'Editor'), async (req, res) => { const content = await Content.findOneAndUpdate({ _id: req.params.id, type }, req.body, { new: true, runValidators: true }); return content ? ok(res, content, 'Updated') : fail(res, 'Content not found', 404); });
-  app.delete(`/api/${type}/:id`, auth, roles('Admin'), async (req, res) => { const content = await Content.findOneAndDelete({ _id: req.params.id, type }); return content ? ok(res, null, 'Deleted') : fail(res, 'Content not found', 404); });
+  app.put(`/api/${type}/:id`, auth, roles('Admin', 'Editor'), async (req, res) => { const content = await Content.findOneAndUpdate({ _id: req.params.id, type }, req.body, { new: true, runValidators: true }); return content ? ok(res, content, 'Updated') : fail(res, 'Content not found'); });
+  app.delete(`/api/${type}/:id`, auth, roles('Admin'), async (req, res) => { const content = await Content.findOneAndDelete({ _id: req.params.id, type }); return content ? ok(res, null, 'Deleted') : fail(res, 'Content not found'); });
 }
 
 app.post('/api/contact', async (req, res) => { try { if (!req.body?.name || !emailValid(req.body?.email) || !req.body?.message) return fail(res, 'Name, valid email and message are required'); return ok(res, await Contact.create({ ...req.body, email: String(req.body.email).toLowerCase().trim() }), 'Inquiry received', null, 201); } catch (error) { return fail(res, error.message); } });
@@ -151,8 +151,8 @@ app.put('/api/contact/:id', auth, roles('Admin'), async (req, res) => { const co
 app.delete('/api/contact/:id', auth, roles('Admin'), async (req, res) => { const contact = await Contact.findByIdAndDelete(req.params.id); return contact ? ok(res, null, 'Deleted') : fail(res, 'Inquiry not found', 404); });
 app.get('/api/testimonials', async (_req, res) => ok(res, await Testimonial.find().sort({ featured: -1, createdAt: -1 }).lean()));
 app.post('/api/testimonials', auth, roles('Admin', 'Editor'), async (req, res) => ok(res, await Testimonial.create(req.body), 'Created', null, 201));
-app.put('/api/testimonials/:id', auth, roles('Admin', 'Editor'), async (req, res) => { const testimonial = await Testimonial.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true }); return testimonial ? ok(res, testimonial, 'Updated') : fail(res, 'Not found', 404); });
-app.delete('/api/testimonials/:id', auth, roles('Admin'), async (req, res) => { const testimonial = await Testimonial.findByIdAndDelete(req.params.id); return testimonial ? ok(res, null, 'Deleted') : fail(res, 'Not found', 404); });
+app.put('/api/testimonials/:id', auth, roles('Admin', 'Editor'), async (req, res) => { const testimonial = await Testimonial.findByIdAndUpdate(req.params.id, req.body, { new: true, runValidators: true }); return testimonial ? ok(res, testimonial, 'Updated') : fail(res, 'Not found'); });
+app.delete('/api/testimonials/:id', auth, roles('Admin'), async (req, res) => { const testimonial = await Testimonial.findByIdAndDelete(req.params.id); return testimonial ? ok(res, null, 'Deleted') : fail(res, 'Not found'); });
 app.post('/api/newsletter', async (req, res) => { try { const email = String(req.body?.email || '').toLowerCase().trim(); if (!emailValid(email)) return fail(res, 'Valid email required'); await Newsletter.updateOne({ email }, { $setOnInsert: { email } }, { upsert: true }); return ok(res, null, 'Subscribed', null, 201); } catch (error) { return fail(res, error.message); } });
 app.get('/api/dashboard/stats', auth, roles('Admin', 'Editor'), async (_req, res) => { const [products, blog, caseStudies, jobs, newContacts, customers] = await Promise.all([Product.countDocuments(), Content.countDocuments({ type: 'blog' }), Content.countDocuments({ type: 'case-studies' }), Content.countDocuments({ type: 'jobs' }), Contact.countDocuments({ status: 'New' }), User.countDocuments({ role: 'Customer' })]); return ok(res, { products, blog, caseStudies, jobs, newContacts, customers }); });
 app.get('/api/admin/users', auth, roles('Admin'), async (req, res) => { const page = Math.max(Number(req.query.page) || 1, 1); const limit = Math.min(Number(req.query.limit) || 25, 100); const search = String(req.query.search || '').trim(); const filter = search ? { $or: [{ name: { $regex: search, $options: 'i' } }, { email: { $regex: search, $options: 'i' } }] } : {}; const [data, total] = await Promise.all([User.find(filter).select('-password').sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit).lean(), User.countDocuments(filter)]); return ok(res, data, 'Users', { page, limit, total, pages: Math.ceil(total / limit) }); });
@@ -166,14 +166,18 @@ const seed = async () => {
     { name: 'ProjectFlow', slug: 'projectflow', tagline: 'Project management without the overhead.', description: 'A focused workspace for planning projects, coordinating teams and keeping delivery on track.', longDescription: 'ProjectFlow brings planning, collaboration, reporting and accountability into one calm workspace.', category: 'Productivity', platforms: ['Web', 'Cloud'], technologies: ['React', 'Node.js', 'MongoDB'], status: 'Live', featured: true, features: [{ title: 'Real-time collaboration', description: 'Keep teams aligned with shared workspaces and updates.' }, { title: 'Advanced reporting', description: 'Turn delivery data into clear operational insight.' }, { title: 'Role-based permissions', description: 'Give every team member the right level of access.' }], benefits: ['Faster project delivery', 'Clearer ownership', 'Better operational visibility'] },
     { name: 'DataPulse', slug: 'datapulse', tagline: 'Business intelligence in real time.', description: 'Dashboards and analytics that turn operational data into decisions.', category: 'Analytics', platforms: ['Web', 'API'], technologies: ['React', 'Node.js', 'MongoDB'], status: 'Beta', featured: true, features: [{ title: 'Live dashboards', description: 'Monitor important metrics as they change.' }, { title: 'Flexible analytics', description: 'Build views around the questions your business asks.' }] },
     { name: 'SecureDesk', slug: 'securedesk', tagline: 'Customer support teams move faster.', description: 'Ticketing, knowledge and customer communication in one secure platform.', category: 'Security', platforms: ['Web', 'Cloud'], technologies: ['React', 'Node.js'], status: 'Coming Soon', featured: true, features: [{ title: 'Smart ticketing', description: 'Route and prioritize customer issues.' }, { title: 'Knowledge base', description: 'Help customers find answers quickly.' }] },
-    { name: 'AutomateX', slug: 'automatex', tagline: 'Automate repetitive business workflows.', description: 'Connect processes, approvals and notifications without unnecessary manual work.', category: 'Automation', platforms: ['Web', 'API'], technologies: ['Node.js', 'MongoDB'], status: 'Live', featured: true, features: [{ title: 'Workflow builder', description: 'Model repeatable processes visually.' }, { title: 'API integrations', description: 'Connect your existing systems.' }] }
+    { name: 'AutomateX', slug: 'automatex', tagline: 'Automate repetitive business workflows.', description: 'Connect processes, approvals and notifications without unnecessary manual work.', category: 'Automation', platforms: ['Web', 'API'], technologies: ['Node.js', 'MongoDB'], status: 'Live', featured: true, features: [{ title: 'Workflow automation', description: 'Connect repetitive business processes.' }] }
   ]);
-  if (!await SiteSettings.exists({ key: 'site' })) await SiteSettings.create(siteDefaults());
 };
 
-app.use((req, res) => fail(res, 'Route not found', 404));
-app.use((error, _req, res, _next) => { console.error(error); return fail(res, error.message || 'Internal server error', error.status || 500); });
+const start = async () => {
+  const mongoUrl = process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DB_URL;
+  if (!mongoUrl) throw new Error('MONGODB_URI (or MONGO_URI/DB_URL) must be configured');
+  await mongoose.connect(mongoUrl);
+  await seed();
+  app.listen(port, '0.0.0.0', () => console.log(`primeStack API running on port ${port}`));
+};
 
-(async () => { try { if (process.env.MONGODB_URI) await mongoose.connect(process.env.MONGODB_URI); await seed(); app.listen(port, '0.0.0.0', () => console.log(`primeStack API listening on ${port}`)); } catch (error) { console.error('Startup failed:', error); process.exit(1); } })();
+start().catch(error => { console.error(error); process.exit(1); });
 
 export default app;
