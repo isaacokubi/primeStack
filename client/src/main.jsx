@@ -25,10 +25,9 @@ const hideDecorativeSvg = (root = document) => {
   });
 };
 
+// Run once at startup. Do not observe the entire document while also mutating
+// SVG attributes: that pattern can continuously retrigger itself and freeze the SPA.
 hideDecorativeSvg();
-
-const observer = new MutationObserver(() => hideDecorativeSvg());
-observer.observe(document.documentElement, { childList: true, subtree: true });
 
 createRoot(document.getElementById('root')).render(
   <React.StrictMode>
