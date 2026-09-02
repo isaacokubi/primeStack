@@ -8,13 +8,12 @@ const run = async () => {
     throw new Error('MONGODB_URI and JWT_SECRET are required');
   }
 
-  const isProduction = process.env.NODE_ENV === 'production';
-  if (isProduction && (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD)) {
-    throw new Error('ADMIN_EMAIL and ADMIN_PASSWORD must be configured in production');
+  if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
+    throw new Error('ADMIN_EMAIL and ADMIN_PASSWORD must be configured before running the admin seed');
   }
 
-  const email = (process.env.ADMIN_EMAIL || 'admin@example.com').toLowerCase().trim();
-  const password = process.env.ADMIN_PASSWORD || 'ChangeMe123!';
+  const email = process.env.ADMIN_EMAIL.toLowerCase().trim();
+  const password = process.env.ADMIN_PASSWORD;
   if (password.length < 12) {
     throw new Error('ADMIN_PASSWORD must be at least 12 characters');
   }
