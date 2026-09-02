@@ -1,5 +1,5 @@
 /* =========================================================
-   primeStack ADMIN — Green/Blue Global Text Theme
+   Beacle Constructors ADMIN — Green/Blue Global Text Theme
    ========================================================= */
 
 .adminPro {
@@ -11,11 +11,8 @@
   --admin-muted: #0e7490;
 }
 
-/* Main admin text */
 .adminPro,
 .adminPro p,
-.adminPro span,
-.adminPro div,
 .adminPro label,
 .adminPro small,
 .adminPro strong,
@@ -25,11 +22,12 @@
 .adminPro h3,
 .adminPro h4,
 .adminPro h5,
-.adminPro h6 {
+.adminPro h6,
+.adminPro td,
+.adminPro th {
   color: var(--admin-text);
 }
 
-/* Headings */
 .adminPro h1,
 .adminPro h2,
 .adminPro h3,
@@ -39,7 +37,6 @@
   color: var(--admin-green-dark);
 }
 
-/* Secondary / descriptive text */
 .adminPro p,
 .adminPro small,
 .adminPro .muted,
@@ -49,7 +46,6 @@
   color: var(--admin-muted);
 }
 
-/* Links */
 .adminPro a {
   color: var(--admin-blue);
 }
@@ -58,37 +54,31 @@
   color: var(--admin-green-dark);
 }
 
-/* Sidebar */
+/* Keep the dark sidebar readable while using green/blue accents. */
 .adminProSidebar {
   color: #ffffff;
 }
 
 .adminProSidebar .adminProNav button,
-.adminProSidebar .adminProCompleteNav {
-  color: #ffffff;
-}
-
+.adminProSidebar .adminProCompleteNav,
 .adminProSidebar .adminProNav button span,
-.adminProSidebar .adminProCompleteNav span {
-  color: inherit;
+.adminProSidebar .adminProCompleteNav span,
+.adminProSidebar .adminProUser strong,
+.adminProSidebar .adminProUser span,
+.adminProSidebar .adminProSignout {
+  color: #ffffff !important;
 }
 
 .adminProSidebar .adminProNav button:hover,
-.adminProSidebar .adminProCompleteNav:hover {
-  color: #ffffff;
-}
-
-/* Active sidebar item */
+.adminProSidebar .adminProCompleteNav:hover,
 .adminProSidebar .adminProNav button.active {
-  color: #ffffff;
+  color: #ffffff !important;
 }
 
-/* Badges */
 .adminProBadge {
   color: #ffffff !important;
 }
 
-/* Inputs */
 .adminPro input,
 .adminPro textarea,
 .adminPro select {
@@ -97,10 +87,9 @@
 
 .adminPro input::placeholder,
 .adminPro textarea::placeholder {
-  color: #0891b2;
+  color: var(--admin-blue-light);
 }
 
-/* Buttons */
 .adminPro button {
   color: var(--admin-blue);
 }
@@ -109,24 +98,19 @@
   color: var(--admin-green-dark);
 }
 
-/* Primary action buttons */
 .adminPro button[class*="primary"],
 .adminPro button[class*="save"],
 .adminPro button[class*="submit"] {
   color: #ffffff;
 }
 
-/* Cards */
-.adminPro .siteCard,
-.adminPro [class*="Card"],
-.adminPro [class*="card"] {
-  color: var(--admin-text);
-}
-
-/* Tables */
-.adminPro table,
-.adminPro th,
-.adminPro td {
+.adminPro .adminProPanel,
+.adminPro .adminProForm,
+.adminPro .adminProContacts,
+.adminPro .adminProKpi,
+.adminPro .adminProShortcut,
+.adminPro .adminProSystem,
+.adminPro .siteCard {
   color: var(--admin-text);
 }
 
@@ -134,60 +118,58 @@
   color: var(--admin-blue);
 }
 
-/* Navigation / section labels */
 .adminProSectionLabel {
   color: var(--admin-blue-light) !important;
 }
 
 /* Website Builder */
-.siteCustomizer {
-  color: var(--admin-text);
-}
-
+.siteCustomizer,
 .siteCustomizer h1,
 .siteCustomizer h2,
-.siteCustomizer h3 {
-  color: var(--admin-green-dark);
-}
-
-.siteCustomizer p,
-.siteCustomizer span {
-  color: var(--admin-blue);
-}
-
-/* Form labels */
+.siteCustomizer h3,
 .siteCustomizer label {
   color: var(--admin-green-dark);
 }
 
-/* Status text */
-.adminPro [class*="success"],
-.adminPro [class*="Success"] {
-  color: var(--admin-green) !important;
+.siteCustomizer p,
+.siteCustomizer span,
+.siteCustomizer small {
+  color: var(--admin-blue);
 }
 
+/* Runtime-created Account, Customers and Conversations panels. */
+.psCompletePanel,
+.psCompletePanel label,
+.psCompletePanel strong,
+.psCompletePanel h2,
+.psCompletePanel h3 {
+  color: var(--admin-green-dark);
+}
+
+.psCompleteHead p,
+.psCompleteItem span,
+.psCompleteItem p,
+.psCompleteEmpty {
+  color: var(--admin-blue) !important;
+}
+
+.psCompletePanel input,
+.psCompletePanel textarea,
+.psCompletePanel select {
+  color: var(--admin-green-dark);
+}
+
+.psCompletePanel button {
+  color: var(--admin-blue);
+}
+
+.psCompleteError,
 .adminPro [class*="error"],
 .adminPro [class*="Error"] {
   color: #b91c1c !important;
 }
 
-/* Dashboard metric labels */
-.adminPro [class*="stat"],
-.adminPro [class*="metric"] {
-  color: var(--admin-green);
-}
-
-/* Runtime-created admin panels */
-.adminProCompletePanel,
-.adminProCompletePanel * {
-  color: var(--admin-text);
-}
-
-.adminProCompletePanel h2,
-.adminProCompletePanel h3 {
-  color: var(--admin-green-dark);
-}
-
-.adminProCompletePanel button {
-  color: var(--admin-blue);
+.adminPro [class*="success"],
+.adminPro [class*="Success"] {
+  color: var(--admin-green) !important;
 }
