@@ -1,5 +1,13 @@
-/* PrimeStack CMS — force admin navigation visibility */
+/* PrimeStack CMS — force admin navigation visibility and interaction */
+.adminProSidebar {
+  position: sticky !important;
+  z-index: 1300 !important;
+  pointer-events: auto !important;
+}
+
 .adminProSidebar .adminProNav {
+  position: relative !important;
+  z-index: 1301 !important;
   display: flex !important;
   flex-direction: column !important;
   align-items: stretch !important;
@@ -7,14 +15,19 @@
   min-height: 0 !important;
   visibility: visible !important;
   opacity: 1 !important;
+  pointer-events: auto !important;
 }
 
 .adminProSidebar .adminProNav > button,
 .adminProSidebar .adminProNav > .adminProCompleteNav {
+  position: relative !important;
+  z-index: 1302 !important;
   display: flex !important;
   align-items: center !important;
   visibility: visible !important;
   opacity: 1 !important;
+  pointer-events: auto !important;
+  cursor: pointer !important;
   width: 100% !important;
   min-height: 42px !important;
   flex: 0 0 auto !important;
@@ -26,12 +39,14 @@
   place-items: center !important;
   visibility: visible !important;
   opacity: 1 !important;
+  pointer-events: none !important;
 }
 
 .adminProSidebar .adminProNav > .adminProSectionLabel {
   display: block !important;
   visibility: visible !important;
   opacity: 1 !important;
+  pointer-events: none !important;
   flex: 0 0 auto !important;
 }
 
@@ -39,4 +54,17 @@
   display: inline !important;
   visibility: visible !important;
   opacity: 1 !important;
+  pointer-events: none !important;
+}
+
+.adminProSidebar .adminProSidebarBottom,
+.adminProSidebar .adminProSignout {
+  pointer-events: auto !important;
+}
+
+@media (max-width: 900px) {
+  .adminProSidebar {
+    position: fixed !important;
+    z-index: 1300 !important;
+  }
 }
