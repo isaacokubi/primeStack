@@ -1,0 +1,550 @@
+/* primeStack homepage upgrade */
+.hero{position:relative;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(380px,.95fr);align-items:center;gap:48px;min-height:700px;padding-top:72px;padding-bottom:72px;overflow:visible;background:radial-gradient(circle at 82% 38%,rgba(199,243,107,.10),transparent 24%),radial-gradient(circle at 60% 10%,rgba(34,102,170,.18),transparent 30%)}
+.hero::before{content:'';position:absolute;width:520px;height:520px;right:-180px;top:90px;border:1px solid rgba(199,243,107,.10);border-radius:50%;box-shadow:0 0 0 80px rgba(199,243,107,.025),0 0 0 160px rgba(199,243,107,.018);pointer-events:none}.hero>div:first-child{position:relative;z-index:2}.hero .eyebrow{color:#c7f36b!important;letter-spacing:.20em}.hero h1{max-width:820px;font-size:clamp(3.4rem,6.7vw,6.8rem);line-height:.92;color:#ffffff!important;text-shadow:0 2px 20px rgba(0,0,0,.22)}.hero p{max-width:680px;font-size:1.16rem;line-height:1.8;color:#d2dbe5!important}.hero .actions{margin-top:34px}.hero .btn{min-height:52px;padding:14px 21px;border-radius:12px;transition:transform .2s ease,box-shadow .2s ease}.hero .btn:hover{transform:translateY(-2px)}.hero .primary:hover{box-shadow:0 12px 35px rgba(199,243,107,.18)}
+.heroTrust{display:flex;flex-wrap:wrap;gap:10px 24px;margin-top:30px}.heroTrust span{color:#c5d0dc!important;font-size:.78rem;font-weight:700}.heroTrust span::before{content:'✓';color:#c7f36b;margin-right:7px}
+.mockup{position:relative;min-height:560px;height:560px;width:100%;border-radius:34px;border:1px solid rgba(255,255,255,.12);overflow:hidden;isolation:isolate;background:#0a1624;box-shadow:0 35px 100px rgba(0,0,0,.42),0 0 80px rgba(26,91,145,.12);transform:rotate(1.5deg);z-index:1}
+.mockup::before{content:'';position:absolute;inset:0;background-image:linear-gradient(180deg,rgba(7,16,29,.04) 30%,rgba(7,16,29,.88) 100%),var(--founder-image,linear-gradient(135deg,#10243a,#07111e));background-size:cover;background-position:center top;background-repeat:no-repeat;filter:saturate(.92) contrast(1.04);transform:scale(1.035);z-index:-2}.mockup .heroFounderImage{
+  position:absolute!important;
+  top:0!important;
+  right:0!important;
+  bottom:auto!important;
+  left:auto!important;
+  width:auto!important;
+  height:100%!important;
+  max-width:360px!important;
+  max-height:420px!important;
+  min-width:0!important;
+  object-fit:contain!important;
+  object-position:center top!important;
+  display:block!important;
+  margin:0!important;
+  z-index:2!important;
+  opacity:1!important;
+}.mockHeader,.mockTitle,.mockgrid{display:none!important}
+.trust{display:grid;grid-template-columns:repeat(4,1fr);gap:0;padding-top:0;padding-bottom:70px}.trust>div{min-height:130px;padding:24px 30px;border-top:1px solid #1c2b3d;border-bottom:1px solid #1c2b3d;border-right:1px solid #1c2b3d;background:linear-gradient(180deg,rgba(15,28,45,.58),rgba(9,21,35,.28))}.trust>div:first-child{border-left:1px solid #1c2b3d;border-radius:16px 0 0 16px}.trust>div:last-child{border-radius:0 16px 16px 0}.trust strong{display:block;font:700 2.2rem 'Space Grotesk';color:#fff}.trust span{display:block;margin-top:4px;color:#aeb9c9;font-size:.78rem}
+.sectionHead{align-items:end;margin-bottom:32px}.sectionHead h2{font-size:clamp(2.2rem,4vw,4rem);letter-spacing:-.045em;color:#fff}.sectionHead>a{color:#c7f36b;font-weight:700}.grid{gap:16px}.card{position:relative;border:1px solid #1c2d41;background:linear-gradient(145deg,#0d1a2a,#091522);border-radius:18px;padding:25px;transition:transform .22s ease,border-color .22s ease,box-shadow .22s ease;color:#e8edf5}.card:hover{transform:translateY(-5px);border-color:#38516d;box-shadow:0 20px 45px rgba(0,0,0,.22)}.card h3{font-size:1.35rem;color:#fff}.card p{color:#b8c3d1}.productLogo{width:48px;height:48px;border-radius:14px;display:grid;place-items:center;background:#13243a;color:#c7f36b;margin-bottom:22px}.pill{display:inline-flex;padding:5px 9px;border-radius:99px;background:#102237;color:#c4d0dd;font-size:.67rem;font-weight:800}.learn{display:inline-flex;align-items:center;gap:7px;margin-top:14px;color:#c7f36b;font-size:.82rem;font-weight:800}
+.serviceGrid{color:#e8edf5}.serviceGrid .service{color:#e8edf5}.serviceGrid .service h3{color:#fff}.serviceGrid .service p{color:#b8c3d1}.serviceGrid .service>span{color:#c7f36b}.empty{color:#c0cad6!important}.eyebrow{color:#9eafc1}.pageHead h1,.detailHero h1{color:#fff}.pageHead p,.detailHero>p{color:#b8c3d1}
+.cta{position:relative;margin-top:40px;margin-bottom:20px;border:1px solid #293e54;border-radius:28px;overflow:hidden;background:radial-gradient(circle at 90% 30%,rgba(199,243,107,.13),transparent 25%),linear-gradient(135deg,#0d1d2f,#08131f);box-shadow:0 25px 70px rgba(0,0,0,.25)}.cta::after{content:'';position:absolute;width:220px;height:220px;right:-80px;bottom:-110px;border:1px solid rgba(199,243,107,.14);border-radius:50%}.cta h2{position:relative;z-index:1;font-size:clamp(2.4rem,5vw,4.7rem);max-width:800px;letter-spacing:-.05em;color:#fff}.cta p{position:relative;z-index:1;max-width:700px;color:#b8c3d1;font-size:1.05rem}.cta .btn{position:relative;z-index:2}.newsletter{border:1px solid #1e3044!important;background:linear-gradient(135deg,#0c1a2a,#091522)!important;border-radius:22px!important;padding:32px!important;box-shadow:0 20px 55px rgba(0,0,0,.20)}.newsletter h3{font-size:1.65rem;margin:8px 0 3px;color:#fff}.newsletter p{color:#b8c3d1;margin:0}.newsletter form{border:1px solid #273a50;background:#07111e;border-radius:12px;padding:6px 6px 6px 14px}.newsletter input{min-width:0;color:#fff}.navLogin{color:#d7e0ea!important;font-weight:700}.navLogin:hover{color:#fff!important}
+.mockup .founderCaption{position:absolute!important;left:20px!important;right:20px!important;bottom:20px!important;display:flex!important;flex-direction:column!important;gap:4px!important;max-width:calc(100% - 40px)!important;padding:12px 14px!important;border-radius:12px!important;background:rgba(7,16,29,.9)!important;backdrop-filter:blur(6px)!important;-webkit-backdrop-filter:blur(6px)!important;color:#fff!important;z-index:5!important}.mockup .founderCaption>span{color:#c7f36b!important;font-size:.64rem!important;font-weight:800!important;letter-spacing:.16em!important}.mockup .founderCaption strong{font-size:1.35rem!important;line-height:1.1!important;font-weight:800!important;color:#fff!important;overflow-wrap:anywhere}.mockup .founderCaption em{font-size:.82rem!important;line-height:1.25!important;font-style:normal!important;font-weight:600!important;color:#c4d0dd!important;opacity:1!important;overflow-wrap:anywhere}
+main section h2,main section h3,main section h4{color:#fff}main section p{color:#b8c3d1}main section a{color:inherit}main input,main textarea,main select{color:#fff;background:#0b1726}main input::placeholder,main textarea::placeholder{color:#8190a2;opacity:1}
+@media(max-width:900px){.hero{grid-template-columns:1fr;min-height:auto;padding-top:62px}.mockup{min-height:480px;height:480px;max-width:620px;width:100%;margin:5px auto 0}.trust{grid-template-columns:1fr 1fr;gap:10px}.trust>div,.trust>div:first-child,.trust>div:last-child{border:1px solid #1c2b3d;border-radius:14px}}@media(max-width:520px){.hero h1{font-size:3.15rem}.hero{padding-top:48px}.mockup{min-height:400px;height:400px;border-radius:24px}.trust{grid-template-columns:1fr}.trust>div{min-height:100px}.cta{border-radius:20px}.newsletter{padding:23px!important}}
+
+
+/* =========================================================
+   FINAL HERO / FOUNDER PORTRAIT FIX
+   ========================================================= */
+
+.hero{
+  display:grid!important;
+  grid-template-columns:minmax(0,1fr) minmax(280px,360px)!important;
+  align-items:center!important;
+  gap:56px!important;
+  min-height:620px!important;
+  overflow:visible!important;
+}
+
+.hero > div:first-child{
+  min-width:0!important;
+}
+
+.hero > .mockup{
+  position:relative!important;
+  width:100%!important;
+  max-width:360px!important;
+  height:460px!important;
+  min-height:460px!important;
+  margin:0 0 0 auto!important;
+  overflow:visible!important;
+  display:flex!important;
+  align-items:flex-start!important;
+  justify-content:center!important;
+  background:none!important;
+  box-shadow:none!important;
+  border:none!important;
+}
+
+.hero > .mockup .heroFounderImage{
+  position:relative!important;
+  inset:auto!important;
+  display:block!important;
+  width:auto!important;
+  height:auto!important;
+  max-width:100%!important;
+  max-height:440px!important;
+  min-width:0!important;
+  min-height:0!important;
+  margin:0 auto!important;
+  object-fit:contain!important;
+  object-position:center top!important;
+  z-index:5!important;
+  opacity:1!important;
+}
+
+.hero > .mockup .mockupOverlay,
+.hero > .mockup .mockHeader,
+.hero > .mockup .mockTitle,
+.hero > .mockup .mockgrid{
+  display:none!important;
+}
+
+.hero > .mockup .founderCaption{
+  position:absolute!important;
+  left:50%!important;
+  bottom:8px!important;
+  transform:translateX(-50%)!important;
+  width:max-content!important;
+  max-width:100%!important;
+  z-index:10!important;
+  text-align:center!important;
+}
+
+@media(max-width:900px){
+  .hero{
+    grid-template-columns:1fr!important;
+    gap:36px!important;
+    text-align:left!important;
+  }
+
+  .hero > .mockup{
+    width:100%!important;
+    max-width:360px!important;
+    height:420px!important;
+    min-height:420px!important;
+    margin:0 auto!important;
+  }
+
+  .hero > .mockup .heroFounderImage{
+    max-height:400px!important;
+  }
+}
+
+@media(max-width:520px){
+  .hero{
+    gap:24px!important;
+  }
+
+  .hero > .mockup{
+    max-width:300px!important;
+    height:360px!important;
+    min-height:360px!important;
+  }
+
+  .hero > .mockup .heroFounderImage{
+    max-height:340px!important;
+  }
+}
+
+/* =========================================================
+   PRIMEStack — FINAL HOMEPAGE LAYOUT SYSTEM
+   Fix section alignment + enlarge founder portrait
+   ========================================================= */
+
+/* ---------- GLOBAL HOMEPAGE CONTAINER ---------- */
+
+main > section,
+main > article {
+  width: min(100% - 48px, 1400px) !important;
+  max-width: 1400px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  box-sizing: border-box !important;
+}
+
+/* ---------- HERO ---------- */
+
+.hero {
+  width: min(100% - 48px, 1400px) !important;
+  max-width: 1400px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+  display: grid !important;
+  grid-template-columns: minmax(0, 1fr) minmax(360px, 430px) !important;
+  align-items: center !important;
+  gap: 55px !important;
+
+  min-height: 680px !important;
+  padding: 70px 0 !important;
+
+  overflow: visible !important;
+}
+
+/* Hero text must stay on the left */
+
+.hero > div:first-child {
+  width: 100% !important;
+  max-width: 760px !important;
+  min-width: 0 !important;
+  margin: 0 !important;
+  text-align: left !important;
+}
+
+/* Hero heading */
+
+.hero h1 {
+  max-width: 760px !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Hero paragraph */
+
+.hero p {
+  max-width: 650px !important;
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* Hero buttons */
+
+.hero .actions {
+  justify-content: flex-start !important;
+}
+
+/* ---------- FOUNDER PORTRAIT ---------- */
+
+.hero > .mockup {
+  position: relative !important;
+
+  width: 100% !important;
+  max-width: 430px !important;
+
+  height: 500px !important;
+  min-height: 500px !important;
+
+  margin: 0 0 0 auto !important;
+
+  display: flex !important;
+  align-items: flex-start !important;
+  justify-content: center !important;
+
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+
+  overflow: visible !important;
+}
+
+.hero > .mockup .heroFounderImage {
+  position: relative !important;
+
+  display: block !important;
+
+  width: auto !important;
+  height: auto !important;
+
+  max-width: 430px !important;
+  max-height: 490px !important;
+
+  min-width: 0 !important;
+  min-height: 0 !important;
+
+  margin: 0 auto !important;
+
+  object-fit: contain !important;
+  object-position: center top !important;
+
+  z-index: 5 !important;
+  opacity: 1 !important;
+}
+
+/* Remove old mockup decoration */
+
+.hero > .mockup .mockupOverlay,
+.hero > .mockup .mockHeader,
+.hero > .mockup .mockTitle,
+.hero > .mockup .mockgrid {
+  display: none !important;
+}
+
+/* Founder caption */
+
+.hero > .mockup .founderCaption {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 5px !important;
+
+  transform: translateX(-50%) !important;
+
+  width: max-content !important;
+  max-width: 95% !important;
+
+  text-align: center !important;
+
+  z-index: 10 !important;
+}
+
+/* ---------- SECTION HEADERS ---------- */
+
+.sectionHead {
+  width: 100% !important;
+  max-width: 1400px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+  display: flex !important;
+  align-items: flex-end !important;
+  justify-content: space-between !important;
+
+  gap: 30px !important;
+
+  text-align: left !important;
+}
+
+.sectionHead > div {
+  min-width: 0 !important;
+}
+
+.sectionHead h2 {
+  margin-left: 0 !important;
+  margin-right: 0 !important;
+}
+
+/* ---------- PRODUCTS ---------- */
+
+.grid {
+  width: 100% !important;
+  max-width: 1400px !important;
+
+  display: grid !important;
+  grid-template-columns: repeat(4, minmax(0, 1fr)) !important;
+
+  gap: 20px !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+.grid .card {
+  width: 100% !important;
+  margin: 0 !important;
+  text-align: left !important;
+}
+
+/* ---------- SERVICES ---------- */
+
+.serviceGrid {
+  width: 100% !important;
+  max-width: 1400px !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+  display: grid !important;
+  grid-template-columns: repeat(3, minmax(0, 1fr)) !important;
+
+  gap: 20px !important;
+}
+
+.serviceGrid .service {
+  width: 100% !important;
+  margin: 0 !important;
+  text-align: left !important;
+}
+
+/* ---------- CASE STUDIES ---------- */
+
+.caseGrid,
+.caseStudies,
+.casesGrid {
+  width: 100% !important;
+  max-width: 1400px !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* ---------- TESTIMONIALS ---------- */
+
+.testimonials,
+.testimonialGrid,
+.quotes,
+.quoteGrid {
+  width: 100% !important;
+  max-width: 1400px !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* ---------- BLOG ---------- */
+
+.blogGrid,
+.postsGrid,
+.articleGrid {
+  width: 100% !important;
+  max-width: 1400px !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
+/* ---------- CTA ---------- */
+
+.cta {
+  width: 100% !important;
+  max-width: 1400px !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+  box-sizing: border-box !important;
+
+  text-align: left !important;
+}
+
+/* ---------- NEWSLETTER ---------- */
+
+.newsletter {
+  width: 100% !important;
+  max-width: 1400px !important;
+
+  margin-left: auto !important;
+  margin-right: auto !important;
+
+  box-sizing: border-box !important;
+
+  text-align: left !important;
+}
+
+/* ---------- FOOTER ---------- */
+
+footer {
+  width: 100% !important;
+  max-width: none !important;
+
+  margin: 0 !important;
+
+  box-sizing: border-box !important;
+
+  text-align: left !important;
+}
+
+footer > div {
+  min-width: 0 !important;
+}
+
+/* ---------- REMOVE ACCIDENTAL CENTER/RIGHT ALIGNMENT ---------- */
+
+main section h2,
+main section h3,
+main section h4,
+main section p,
+main section .card,
+main section .service {
+  text-align: left !important;
+}
+
+/* ---------- RESPONSIVE ---------- */
+
+@media (max-width: 1100px) {
+
+  .hero {
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 380px) !important;
+    gap: 35px !important;
+  }
+
+  .hero > .mockup {
+    max-width: 380px !important;
+    height: 460px !important;
+    min-height: 460px !important;
+  }
+
+  .hero > .mockup .heroFounderImage {
+    max-width: 380px !important;
+    max-height: 450px !important;
+  }
+
+  .grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+
+  .serviceGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr)) !important;
+  }
+}
+
+@media (max-width: 800px) {
+
+  main > section,
+  main > article,
+  .hero {
+    width: calc(100% - 36px) !important;
+  }
+
+  .hero {
+    grid-template-columns: 1fr !important;
+    gap: 35px !important;
+    min-height: auto !important;
+    padding: 65px 0 !important;
+  }
+
+  .hero > div:first-child {
+    max-width: 100% !important;
+  }
+
+  .hero > .mockup {
+    width: 100% !important;
+    max-width: 380px !important;
+    height: 430px !important;
+    min-height: 430px !important;
+    margin: 0 auto !important;
+  }
+
+  .hero > .mockup .heroFounderImage {
+    max-width: 380px !important;
+    max-height: 420px !important;
+  }
+
+  .sectionHead {
+    display: block !important;
+  }
+
+  .sectionHead > a {
+    display: inline-flex !important;
+    margin-top: 15px !important;
+  }
+
+  .grid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+
+  .serviceGrid {
+    grid-template-columns: 1fr 1fr !important;
+  }
+}
+
+@media (max-width: 520px) {
+
+  main > section,
+  main > article,
+  .hero {
+    width: calc(100% - 28px) !important;
+  }
+
+  .hero {
+    padding: 50px 0 !important;
+    gap: 25px !important;
+  }
+
+  .hero h1 {
+    font-size: 3rem !important;
+  }
+
+  .hero > .mockup {
+    max-width: 310px !important;
+    height: 370px !important;
+    min-height: 370px !important;
+  }
+
+  .hero > .mockup .heroFounderImage {
+    max-width: 310px !important;
+    max-height: 360px !important;
+  }
+
+  .grid,
+  .serviceGrid {
+    grid-template-columns: 1fr !important;
+  }
+}
+

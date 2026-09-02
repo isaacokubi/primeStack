@@ -1,0 +1,928 @@
+/* =========================================================
+   primeStack — Homepage Layout
+   Clean, consistent, responsive design
+   ========================================================= */
+
+/* ---------- MAIN HOMEPAGE SECTIONS ---------- */
+
+main > section,
+main > article {
+  width: min(calc(100% - 48px), 1400px);
+  max-width: 1400px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+}
+
+/* ---------- HERO ---------- */
+
+.hero {
+  position: relative;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(400px, 480px);
+  align-items: center;
+  gap: 60px;
+
+  width: min(calc(100% - 48px), 1400px);
+  max-width: 1400px;
+  min-height: 700px;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  padding: 75px 0;
+
+  overflow: visible;
+  box-sizing: border-box;
+
+  background:
+    radial-gradient(
+      circle at 82% 38%,
+      rgba(199,243,107,.10),
+      transparent 24%
+    ),
+    radial-gradient(
+      circle at 60% 10%,
+      rgba(34,102,170,.18),
+      transparent 30%
+    );
+}
+
+.hero::before {
+  content: '';
+  position: absolute;
+  width: 520px;
+  height: 520px;
+  right: -180px;
+  top: 90px;
+
+  border: 1px solid rgba(199,243,107,.10);
+  border-radius: 50%;
+
+  box-shadow:
+    0 0 0 80px rgba(199,243,107,.025),
+    0 0 0 160px rgba(199,243,107,.018);
+
+  pointer-events: none;
+}
+
+.hero > div:first-child {
+  position: relative;
+  z-index: 2;
+
+  width: 100%;
+  max-width: 760px;
+  min-width: 0;
+
+  margin: 0;
+  text-align: left;
+}
+
+.hero .eyebrow {
+  color: #c7f36b !important;
+  letter-spacing: .20em;
+}
+
+.hero h1 {
+  max-width: 760px;
+
+  margin-left: 0;
+  margin-right: 0;
+
+  color: #fff !important;
+
+  font-size: clamp(3.4rem, 6.5vw, 6.6rem);
+  line-height: .92;
+  letter-spacing: -.055em;
+
+  text-shadow: 0 2px 20px rgba(0,0,0,.22);
+}
+
+.hero p {
+  max-width: 650px;
+
+  margin-left: 0;
+  margin-right: 0;
+
+  color: #d2dbe5 !important;
+
+  font-size: 1.16rem;
+  line-height: 1.8;
+}
+
+.hero .actions {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 12px;
+
+  margin-top: 34px;
+}
+
+.hero .btn {
+  min-height: 52px;
+  padding: 14px 21px;
+
+  border-radius: 12px;
+
+  transition:
+    transform .2s ease,
+    box-shadow .2s ease;
+}
+
+.hero .btn:hover {
+  transform: translateY(-2px);
+}
+
+.hero .primary:hover {
+  box-shadow: 0 12px 35px rgba(199,243,107,.18);
+}
+
+/* ---------- HERO TRUST ---------- */
+
+.heroTrust {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 10px 24px;
+
+  margin-top: 30px;
+}
+
+.heroTrust span {
+  color: #c5d0dc !important;
+
+  font-size: .78rem;
+  font-weight: 700;
+}
+
+.heroTrust span::before {
+  content: '✓';
+
+  margin-right: 7px;
+
+  color: #c7f36b;
+}
+
+/* ---------- FOUNDER PORTRAIT ---------- */
+
+.hero > .mockup {
+  position: relative;
+
+  width: 100%;
+  max-width: 480px;
+
+  height: 540px;
+  min-height: 540px;
+
+  margin: 0 0 0 auto;
+
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+
+  background: transparent !important;
+
+  border: 0 !important;
+  border-radius: 0;
+
+  box-shadow: none !important;
+
+  overflow: visible;
+
+  transform: none;
+
+  isolation: auto;
+
+  z-index: 2;
+}
+
+.hero > .mockup::before,
+.hero > .mockup::after {
+  display: none !important;
+}
+
+.hero > .mockup .heroFounderImage {
+  position: relative !important;
+
+  top: auto !important;
+  right: auto !important;
+  bottom: auto !important;
+  left: auto !important;
+  inset: auto !important;
+
+  display: block !important;
+
+  width: auto !important;
+  height: auto !important;
+
+  max-width: 480px !important;
+  max-height: 530px !important;
+
+  min-width: 0 !important;
+  min-height: 0 !important;
+
+  margin: 0 auto !important;
+  padding: 0 !important;
+
+  object-fit: contain !important;
+  object-position: center top !important;
+
+  border: 0 !important;
+
+  opacity: 1 !important;
+  visibility: visible !important;
+
+  z-index: 5 !important;
+}
+
+.hero > .mockup .mockupOverlay,
+.hero > .mockup .mockHeader,
+.hero > .mockup .mockTitle,
+.hero > .mockup .mockgrid {
+  display: none !important;
+}
+
+/* ---------- FOUNDER CAPTION ---------- */
+
+.hero > .mockup .founderCaption {
+  position: absolute !important;
+
+  left: 50% !important;
+  right: auto !important;
+  bottom: 8px !important;
+
+  transform: translateX(-50%) !important;
+
+  width: max-content !important;
+  max-width: 90% !important;
+
+  display: flex !important;
+  flex-direction: column !important;
+  gap: 4px !important;
+
+  padding: 12px 18px !important;
+
+  border-radius: 12px !important;
+
+  background: rgba(7,16,29,.90) !important;
+
+  backdrop-filter: blur(7px);
+  -webkit-backdrop-filter: blur(7px);
+
+  text-align: center !important;
+
+  z-index: 10 !important;
+}
+
+.hero > .mockup .founderCaption > span {
+  color: #c7f36b !important;
+
+  font-size: .64rem !important;
+  font-weight: 800 !important;
+  letter-spacing: .16em !important;
+}
+
+.hero > .mockup .founderCaption strong {
+  color: #fff !important;
+
+  font-size: 1.35rem !important;
+  line-height: 1.1 !important;
+  font-weight: 800 !important;
+
+  overflow-wrap: anywhere;
+}
+
+.hero > .mockup .founderCaption em {
+  color: #c4d0dd !important;
+
+  font-size: .82rem !important;
+  line-height: 1.25 !important;
+  font-style: normal !important;
+  font-weight: 600 !important;
+
+  overflow-wrap: anywhere;
+}
+
+/* ---------- TRUST / STATS ---------- */
+
+.trust {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 0;
+
+  padding-top: 0;
+  padding-bottom: 70px;
+}
+
+.trust > div {
+  min-height: 130px;
+
+  padding: 24px 30px;
+
+  border-top: 1px solid #1c2b3d;
+  border-bottom: 1px solid #1c2b3d;
+  border-right: 1px solid #1c2b3d;
+
+  background:
+    linear-gradient(
+      180deg,
+      rgba(15,28,45,.58),
+      rgba(9,21,35,.28)
+    );
+}
+
+.trust > div:first-child {
+  border-left: 1px solid #1c2b3d;
+  border-radius: 16px 0 0 16px;
+}
+
+.trust > div:last-child {
+  border-radius: 0 16px 16px 0;
+}
+
+.trust strong {
+  display: block;
+
+  font:
+    700 2.2rem
+    'Space Grotesk',
+    sans-serif;
+
+  color: #fff;
+}
+
+.trust span {
+  display: block;
+
+  margin-top: 4px;
+
+  color: #aeb9c9;
+
+  font-size: .78rem;
+}
+
+/* ---------- SECTION HEADERS ---------- */
+
+.sectionHead {
+  width: 100%;
+  max-width: 1400px;
+
+  margin-left: auto;
+  margin-right: auto;
+  margin-bottom: 32px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 30px;
+
+  text-align: left;
+}
+
+.sectionHead > div {
+  min-width: 0;
+}
+
+.sectionHead h2 {
+  margin-left: 0;
+  margin-right: 0;
+
+  color: #fff;
+
+  font-size: clamp(2.2rem, 4vw, 4rem);
+  letter-spacing: -.045em;
+}
+
+.sectionHead > a {
+  color: #c7f36b;
+
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+/* ---------- GRIDS ---------- */
+
+.grid {
+  width: 100%;
+  max-width: 1400px;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+
+  gap: 20px;
+}
+
+.grid .card {
+  width: 100%;
+  min-width: 0;
+
+  margin: 0;
+
+  box-sizing: border-box;
+
+  text-align: left;
+}
+
+/* ---------- CARDS ---------- */
+
+.card {
+  position: relative;
+
+  border: 1px solid #1c2d41;
+
+  background:
+    linear-gradient(
+      145deg,
+      #0d1a2a,
+      #091522
+    );
+
+  border-radius: 18px;
+
+  padding: 25px;
+
+  color: #e8edf5;
+
+  transition:
+    transform .22s ease,
+    border-color .22s ease,
+    box-shadow .22s ease;
+}
+
+.card:hover {
+  transform: translateY(-5px);
+
+  border-color: #38516d;
+
+  box-shadow:
+    0 20px 45px
+    rgba(0,0,0,.22);
+}
+
+.card h3 {
+  color: #fff;
+
+  font-size: 1.35rem;
+}
+
+.card p {
+  color: #b8c3d1;
+}
+
+.productLogo {
+  width: 48px;
+  height: 48px;
+
+  display: grid;
+  place-items: center;
+
+  margin-bottom: 22px;
+
+  border-radius: 14px;
+
+  background: #13243a;
+  color: #c7f36b;
+}
+
+.pill {
+  display: inline-flex;
+
+  padding: 5px 9px;
+
+  border-radius: 99px;
+
+  background: #102237;
+  color: #c4d0dd;
+
+  font-size: .67rem;
+  font-weight: 800;
+}
+
+.learn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+
+  margin-top: 14px;
+
+  color: #c7f36b;
+
+  font-size: .82rem;
+  font-weight: 800;
+}
+
+/* ---------- SERVICES ---------- */
+
+.serviceGrid {
+  width: 100%;
+  max-width: 1400px;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 20px;
+}
+
+.serviceGrid .service {
+  width: 100%;
+  min-width: 0;
+
+  margin: 0;
+
+  text-align: left;
+
+  color: #e8edf5;
+}
+
+.serviceGrid .service h3 {
+  color: #fff;
+}
+
+.serviceGrid .service p {
+  color: #b8c3d1;
+}
+
+.serviceGrid .service > span {
+  color: #c7f36b;
+}
+
+/* ---------- GENERAL HOMEPAGE TEXT ---------- */
+
+main section h2,
+main section h3,
+main section h4 {
+  color: #fff;
+}
+
+main section p {
+  color: #b8c3d1;
+}
+
+main section a {
+  color: inherit;
+}
+
+.empty {
+  color: #c0cad6 !important;
+}
+
+/* ---------- CTA ---------- */
+
+.cta {
+  position: relative;
+
+  width: 100%;
+  max-width: 1400px;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  margin-top: 40px;
+  margin-bottom: 20px;
+
+  box-sizing: border-box;
+
+  border: 1px solid #293e54;
+  border-radius: 28px;
+
+  overflow: hidden;
+
+  background:
+    radial-gradient(
+      circle at 90% 30%,
+      rgba(199,243,107,.13),
+      transparent 25%
+    ),
+    linear-gradient(
+      135deg,
+      #0d1d2f,
+      #08131f
+    );
+
+  box-shadow:
+    0 25px 70px
+    rgba(0,0,0,.25);
+
+  text-align: left;
+}
+
+.cta::after {
+  content: '';
+
+  position: absolute;
+
+  width: 220px;
+  height: 220px;
+
+  right: -80px;
+  bottom: -110px;
+
+  border: 1px solid rgba(199,243,107,.14);
+
+  border-radius: 50%;
+}
+
+.cta h2 {
+  position: relative;
+  z-index: 1;
+
+  max-width: 800px;
+
+  color: #fff;
+
+  font-size: clamp(2.4rem, 5vw, 4.7rem);
+  letter-spacing: -.05em;
+}
+
+.cta p {
+  position: relative;
+  z-index: 1;
+
+  max-width: 700px;
+
+  color: #b8c3d1;
+
+  font-size: 1.05rem;
+}
+
+.cta .btn {
+  position: relative;
+  z-index: 2;
+}
+
+/* ---------- NEWSLETTER ---------- */
+
+.newsletter {
+  width: 100%;
+  max-width: 1400px;
+
+  margin-left: auto;
+  margin-right: auto;
+
+  box-sizing: border-box;
+
+  border: 1px solid #1e3044 !important;
+
+  background:
+    linear-gradient(
+      135deg,
+      #0c1a2a,
+      #091522
+    ) !important;
+
+  border-radius: 22px !important;
+
+  padding: 32px !important;
+
+  box-shadow:
+    0 20px 55px
+    rgba(0,0,0,.20);
+
+  text-align: left;
+}
+
+.newsletter h3 {
+  margin: 8px 0 3px;
+
+  color: #fff;
+
+  font-size: 1.65rem;
+}
+
+.newsletter p {
+  margin: 0;
+
+  color: #b8c3d1;
+}
+
+.newsletter form {
+  border: 1px solid #273a50;
+
+  background: #07111e;
+
+  border-radius: 12px;
+
+  padding: 6px 6px 6px 14px;
+}
+
+.newsletter input {
+  min-width: 0;
+
+  color: #fff;
+}
+
+/* ---------- NAV ---------- */
+
+.navLogin {
+  color: #d7e0ea !important;
+  font-weight: 700;
+}
+
+.navLogin:hover {
+  color: #fff !important;
+}
+
+/* =========================================================
+   RESPONSIVE
+   ========================================================= */
+
+@media (max-width: 1100px) {
+
+  .hero {
+    grid-template-columns:
+      minmax(0, 1fr)
+      minmax(330px, 390px);
+
+    gap: 40px;
+  }
+
+  .hero > .mockup {
+    max-width: 390px;
+
+    height: 500px;
+    min-height: 500px;
+  }
+
+  .hero > .mockup .heroFounderImage {
+    max-width: 390px !important;
+    max-height: 490px !important;
+  }
+
+  .grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .serviceGrid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .trust {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 10px;
+  }
+
+  .trust > div,
+  .trust > div:first-child,
+  .trust > div:last-child {
+    border: 1px solid #1c2b3d;
+    border-radius: 14px;
+  }
+}
+
+/* ---------- TABLET ---------- */
+
+@media (max-width: 800px) {
+
+  main > section,
+  main > article {
+    width: calc(100% - 36px);
+  }
+
+  .hero {
+    width: calc(100% - 36px);
+
+    grid-template-columns: 1fr;
+
+    gap: 35px;
+
+    min-height: auto;
+
+    padding: 65px 0;
+  }
+
+  .hero > div:first-child {
+    max-width: 100%;
+  }
+
+  .hero > .mockup {
+    width: 100%;
+    max-width: 390px;
+
+    height: 460px;
+    min-height: 460px;
+
+    margin: 0 auto;
+  }
+
+  .hero > .mockup .heroFounderImage {
+    max-width: 390px !important;
+    max-height: 450px !important;
+  }
+
+  .sectionHead {
+    display: block;
+  }
+
+  .sectionHead > a {
+    display: inline-flex;
+
+    margin-top: 15px;
+  }
+
+  .grid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+
+  .serviceGrid {
+    grid-template-columns:
+      repeat(2, minmax(0, 1fr));
+  }
+}
+
+/* ---------- MOBILE ---------- */
+
+@media (max-width: 520px) {
+
+  main > section,
+  main > article {
+    width: calc(100% - 28px);
+  }
+
+  .hero {
+    width: calc(100% - 28px);
+
+    padding: 50px 0;
+
+    gap: 25px;
+  }
+
+  .hero h1 {
+    font-size: 3rem;
+  }
+
+  .hero p {
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .hero > .mockup {
+    max-width: 320px;
+
+    height: 390px;
+    min-height: 390px;
+  }
+
+  .hero > .mockup .heroFounderImage {
+    max-width: 320px !important;
+    max-height: 380px !important;
+  }
+
+  .hero > .mockup .founderCaption {
+    bottom: 4px !important;
+  }
+
+  .grid,
+  .serviceGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .trust {
+    grid-template-columns: 1fr;
+  }
+
+  .trust > div {
+    min-height: 100px;
+  }
+
+  .cta {
+    border-radius: 20px;
+  }
+
+  .newsletter {
+    padding: 23px !important;
+  }
+}
+
+/* =========================================================
+   FOUNDER IMAGE — POSITION ONLY
+   Keep all existing sizing/layout intact.
+   Move image upward to align with hero headline.
+   ========================================================= */
+
+.hero > .mockup {
+  transform: translateY(-105px);
+}
+
+@media (max-width: 1100px) {
+  .hero > .mockup {
+    transform: translateY(-60px);
+  }
+}
+
+@media (max-width: 800px) {
+  .hero > .mockup {
+    transform: none;
+  }
+}
