@@ -1,6 +1,14 @@
 import jwt from 'jsonwebtoken';
 import User from '../models/User.js';
 
+const JWT_SECRET = process.env.JWT_SECRET || (
+  process.env.NODE_ENV === 'production' ? null : 'development-only-secret-change-me'
+);
+
+if (!JWT_SECRET) {
+  throw new Error('JWT_SECRET must be configured in production');
+}
+
 export const requireAuth = async (req, res, next) => {
   try {
     const token = req.cookies?.ps_token || req.cookies?.token || req.headers.authorization?.replace(/^Bearer\s+/i, '');
@@ -8,7 +16,7 @@ export const requireAuth = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'Authentication required' });
     }
 
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    const decoded = jwt.verify(token, JWT_SECRET);
     if (!decoded?.id) {
       return res.status(401).json({ success: false, message: 'Invalid session' });
     }
@@ -18,8 +26,6 @@ export const requireAuth = async (req, res, next) => {
       return res.status(401).json({ success: false, message: 'User not found or inactive' });
     }
 
-    // Keep both forms available. Existing routes use req.user.id while
-    // Mongoose returns the database identifier as req.user._id.
     req.user = {
       ...user,
       id: user._id.toString()
