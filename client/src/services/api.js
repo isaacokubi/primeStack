@@ -166,32 +166,10 @@ export const contentApi = {
   get: (type, slug) => api.get(`/${type}/${slug}`),
 };
 
-export const contactApi = {
-  create: data => api.post('/contact', data),
-  list: () => api.get('/contact'),
-  update: (id, data) => api.put(`/contact/${id}`, data),
-  remove: id => api.delete(`/contact/${id}`),
-};
-
-export const testimonialsApi = {
-  list: () => api.get('/testimonials'),
-  create: data => api.post('/testimonials', data),
-  update: (id, data) => api.put(`/testimonials/${id}`, data),
-  remove: id => api.delete(`/testimonials/${id}`),
-};
-
-export const newsletterApi = {
-  subscribe: email => api.post('/newsletter', { email }),
-};
-
-export const dashboardApi = {
-  stats: () => api.get('/dashboard/stats'),
-};
-
-export const adminApi = {
-  users: (params = {}) => api.get('/admin/users', { params }),
-  updateUserStatus: (id, status) => api.put(`/admin/users/${id}/status`, { status }),
-};
+export const contactApi = { create: data => api.post('/contact', data) };
+export const testimonialsApi = { list: (params = {}) => api.get('/testimonials', { params }) };
+export const newsletterApi = { subscribe: email => api.post('/newsletter', { email }) };
+export const customerApi = { dashboard: () => api.get('/customer/dashboard') };
 
 export const uploadsApi = {
   image: file => {
