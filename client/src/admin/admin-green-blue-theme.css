@@ -1,0 +1,193 @@
+/* =========================================================
+   primeStack ADMIN — Green/Blue Global Text Theme
+   ========================================================= */
+
+.adminPro {
+  --admin-green: #0f766e;
+  --admin-green-dark: #115e59;
+  --admin-blue: #0369a1;
+  --admin-blue-light: #0891b2;
+  --admin-text: #0f766e;
+  --admin-muted: #0e7490;
+}
+
+/* Main admin text */
+.adminPro,
+.adminPro p,
+.adminPro span,
+.adminPro div,
+.adminPro label,
+.adminPro small,
+.adminPro strong,
+.adminPro b,
+.adminPro h1,
+.adminPro h2,
+.adminPro h3,
+.adminPro h4,
+.adminPro h5,
+.adminPro h6 {
+  color: var(--admin-text);
+}
+
+/* Headings */
+.adminPro h1,
+.adminPro h2,
+.adminPro h3,
+.adminPro h4,
+.adminPro h5,
+.adminPro h6 {
+  color: var(--admin-green-dark);
+}
+
+/* Secondary / descriptive text */
+.adminPro p,
+.adminPro small,
+.adminPro .muted,
+.adminPro [class*="muted"],
+.adminPro [class*="description"],
+.adminPro [class*="subtitle"] {
+  color: var(--admin-muted);
+}
+
+/* Links */
+.adminPro a {
+  color: var(--admin-blue);
+}
+
+.adminPro a:hover {
+  color: var(--admin-green-dark);
+}
+
+/* Sidebar */
+.adminProSidebar {
+  color: #ffffff;
+}
+
+.adminProSidebar .adminProNav button,
+.adminProSidebar .adminProCompleteNav {
+  color: #ffffff;
+}
+
+.adminProSidebar .adminProNav button span,
+.adminProSidebar .adminProCompleteNav span {
+  color: inherit;
+}
+
+.adminProSidebar .adminProNav button:hover,
+.adminProSidebar .adminProCompleteNav:hover {
+  color: #ffffff;
+}
+
+/* Active sidebar item */
+.adminProSidebar .adminProNav button.active {
+  color: #ffffff;
+}
+
+/* Badges */
+.adminProBadge {
+  color: #ffffff !important;
+}
+
+/* Inputs */
+.adminPro input,
+.adminPro textarea,
+.adminPro select {
+  color: var(--admin-green-dark);
+}
+
+.adminPro input::placeholder,
+.adminPro textarea::placeholder {
+  color: #0891b2;
+}
+
+/* Buttons */
+.adminPro button {
+  color: var(--admin-blue);
+}
+
+.adminPro button:hover {
+  color: var(--admin-green-dark);
+}
+
+/* Primary action buttons */
+.adminPro button[class*="primary"],
+.adminPro button[class*="save"],
+.adminPro button[class*="submit"] {
+  color: #ffffff;
+}
+
+/* Cards */
+.adminPro .siteCard,
+.adminPro [class*="Card"],
+.adminPro [class*="card"] {
+  color: var(--admin-text);
+}
+
+/* Tables */
+.adminPro table,
+.adminPro th,
+.adminPro td {
+  color: var(--admin-text);
+}
+
+.adminPro th {
+  color: var(--admin-blue);
+}
+
+/* Navigation / section labels */
+.adminProSectionLabel {
+  color: var(--admin-blue-light) !important;
+}
+
+/* Website Builder */
+.siteCustomizer {
+  color: var(--admin-text);
+}
+
+.siteCustomizer h1,
+.siteCustomizer h2,
+.siteCustomizer h3 {
+  color: var(--admin-green-dark);
+}
+
+.siteCustomizer p,
+.siteCustomizer span {
+  color: var(--admin-blue);
+}
+
+/* Form labels */
+.siteCustomizer label {
+  color: var(--admin-green-dark);
+}
+
+/* Status text */
+.adminPro [class*="success"],
+.adminPro [class*="Success"] {
+  color: var(--admin-green) !important;
+}
+
+.adminPro [class*="error"],
+.adminPro [class*="Error"] {
+  color: #b91c1c !important;
+}
+
+/* Dashboard metric labels */
+.adminPro [class*="stat"],
+.adminPro [class*="metric"] {
+  color: var(--admin-green);
+}
+
+/* Runtime-created admin panels */
+.adminProCompletePanel,
+.adminProCompletePanel * {
+  color: var(--admin-text);
+}
+
+.adminProCompletePanel h2,
+.adminProCompletePanel h3 {
+  color: var(--admin-green-dark);
+}
+
+.adminProCompletePanel button {
+  color: var(--admin-blue);
+}
