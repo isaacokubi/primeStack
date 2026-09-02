@@ -4,6 +4,7 @@ import { BrowserRouter } from 'react-router-dom';
 import App from './AppNew.jsx';
 import InquiryConversationWidget from './inquiries/InquiryConversationWidget.jsx';
 import './styles.css';
+import './responsive.css';
 import './homepage.css';
 import './portal.css';
 import './ui-fixes.css';
