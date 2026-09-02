@@ -1,0 +1,42 @@
+/* PrimeStack CMS — force admin navigation visibility */
+.adminProSidebar .adminProNav {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  width: 100% !important;
+  min-height: 0 !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.adminProSidebar .adminProNav > button,
+.adminProSidebar .adminProNav > .adminProCompleteNav {
+  display: flex !important;
+  align-items: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  width: 100% !important;
+  min-height: 42px !important;
+  flex: 0 0 auto !important;
+}
+
+.adminProSidebar .adminProNav > button > .adminProNavIcon,
+.adminProSidebar .adminProNav > .adminProCompleteNav > .adminProNavIcon {
+  display: inline-grid !important;
+  place-items: center !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
+
+.adminProSidebar .adminProNav > .adminProSectionLabel {
+  display: block !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+  flex: 0 0 auto !important;
+}
+
+.adminProSidebar .adminProNav button span:not(.adminProNavIcon) {
+  display: inline !important;
+  visibility: visible !important;
+  opacity: 1 !important;
+}
