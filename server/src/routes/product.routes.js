@@ -1,8 +1,61 @@
-import {Router} from 'express';import Product from '../models/Product.js';import {requireAuth,requireRole} from '../middleware/auth.js';
-const r=Router();
-r.get('/',async(req,res)=>{try{const {search,category,platform,status,featured,page=1,limit=12}=req.query;const q={published:true};if(search)q.$or=[{name:new RegExp(search,'i')},{description:new RegExp(search,'i')},{tagline:new RegExp(search,'i')}];if(category)q.category=category;if(platform)q.platforms=platform;if(status)q.status=status;if(featured==='true')q.featured=true;const p=Math.max(1,+page),l=Math.min(50,Math.max(1,+limit));const [data,total]=await Promise.all([Product.find(q).sort({featured:-1,createdAt:-1}).skip((p-1)*l).limit(l).lean(),Product.countDocuments(q)]);res.json({success:true,data,meta:{page:p,limit:l,total,pages:Math.ceil(total/l)}});}catch(e){res.status(500).json({success:false,message:'Unable to load products'});}});
-r.get('/:slug',async(req,res)=>{const data=await Product.findOne({slug:req.params.slug,published:true}).lean();if(!data)return res.status(404).json({success:false,message:'Product not found'});res.json({success:true,data});});
-r.post('/',requireAuth,requireRole('Admin','Editor'),async(req,res)=>{try{const data=await Product.create(req.body);res.status(201).json({success:true,data});}catch(e){res.status(400).json({success:false,message:e.message});}});
-r.put('/:id',requireAuth,requireRole('Admin','Editor'),async(req,res)=>{try{const data=await Product.findByIdAndUpdate(req.params.id,req.body,{new:true,runValidators:true});if(!data)return res.status(404).json({success:false,message:'Product not found'});res.json({success:true,data});}catch(e){res.status(400).json({success:false,message:e.message});}});
-r.delete('/:id',requireAuth,requireRole('Admin'),async(req,res)=>{const data=await Product.findByIdAndDelete(req.params.id);if(!data)return res.status(404).json({success:false,message:'Product not found'});res.json({success:true,message:'Product deleted'});});
+import { Router } from 'express';
+import Product from '../models/Product.js';
+import { requireAuth, requireRole } from '../middleware/auth.js';
+
+const r = Router();
+
+const cleanProductPayload = payload => {
+  const body = { ...payload };
+  if (body.logo === '' || body.logo == null) delete body.logo;
+  if (Array.isArray(body.screenshots)) body.screenshots = body.screenshots.filter(Boolean);
+  else if (body.screenshots == null) delete body.screenshots;
+  return body;
+};
+
+r.get('/', async (req, res) => {
+  try {
+    const { search, category, platform, status, featured, page = 1, limit = 12 } = req.query;
+    const q = { published: true };
+    if (search) q.$or = [{ name: new RegExp(search, 'i') }, { description: new RegExp(search, 'i') }, { tagline: new RegExp(search, 'i') }];
+    if (category) q.category = category;
+    if (platform) q.platforms = platform;
+    if (status) q.status = status;
+    if (featured === 'true') q.featured = true;
+    const p = Math.max(1, +page), l = Math.min(50, Math.max(1, +limit));
+    const [data, total] = await Promise.all([
+      Product.find(q).sort({ featured: -1, createdAt: -1 }).skip((p - 1) * l).limit(l).lean(),
+      Product.countDocuments(q),
+    ]);
+    res.json({ success: true, data, meta: { page: p, limit: l, total, pages: Math.ceil(total / l) } });
+  } catch (e) { res.status(500).json({ success: false, message: 'Unable to load products' }); }
+});
+
+r.get('/:slug', async (req, res) => {
+  const data = await Product.findOne({ slug: req.params.slug, published: true }).lean();
+  if (!data) return res.status(404).json({ success: false, message: 'Product not found' });
+  res.json({ success: true, data });
+});
+
+r.post('/', requireAuth, requireRole('Admin', 'Editor'), async (req, res) => {
+  try {
+    const data = await Product.create(cleanProductPayload(req.body));
+    res.status(201).json({ success: true, data });
+  } catch (e) { res.status(400).json({ success: false, message: e.message }); }
+});
+
+r.put('/:id', requireAuth, requireRole('Admin', 'Editor'), async (req, res) => {
+  try {
+    const update = cleanProductPayload(req.body);
+    const data = await Product.findByIdAndUpdate(req.params.id, { $set: update }, { new: true, runValidators: true });
+    if (!data) return res.status(404).json({ success: false, message: 'Product not found' });
+    res.json({ success: true, data });
+  } catch (e) { res.status(400).json({ success: false, message: e.message }); }
+});
+
+r.delete('/:id', requireAuth, requireRole('Admin'), async (req, res) => {
+  const data = await Product.findByIdAndDelete(req.params.id);
+  if (!data) return res.status(404).json({ success: false, message: 'Product not found' });
+  res.json({ success: true, message: 'Product deleted' });
+});
+
 export default r;
