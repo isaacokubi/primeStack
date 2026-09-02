@@ -13,9 +13,9 @@ import './admin/admin-sidebar-fix.css';
 import './founder-image-fix.css';
 import './dark-background-contrast.css';
 import './dashboard-light-contrast.css';
-import './dashboard-contrast-runtime.css';
-import './runtime-brand-sync.js';
 import './dashboard-contrast-runtime.js';
+import './runtime-brand-sync.js';
+import './admin/admin-complete-runtime.js';
 
 const hideDecorativeSvg = (root = document) => {
   root.querySelectorAll('svg').forEach((svg) => {
@@ -25,8 +25,6 @@ const hideDecorativeSvg = (root = document) => {
   });
 };
 
-// Run once at startup. A document-wide observer that mutates SVG attributes can
-// continuously retrigger itself and make the SPA unresponsive.
 hideDecorativeSvg();
 
 createRoot(document.getElementById('root')).render(
