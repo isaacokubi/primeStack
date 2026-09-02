@@ -25,4 +25,34 @@ const productSchema = new mongoose.Schema({
   seo: { title: String, description: String, keywords: [String], ogImage: String }
 }, { timestamps: true });
 
+/*
+ * Protect product media during edits.
+ * The CMS can send an empty logo/screenshots value when an image field was
+ * not changed. Never let that accidental empty value erase media already
+ * stored in MongoDB. An explicit clear operation can opt in with
+ * clearScreenshots: true.
+ */
+productSchema.pre('findOneAndUpdate', function(next) {
+  const update = this.getUpdate() || {};
+  const target = update.$set || update;
+
+  if (target.logo === '' || target.logo == null) {
+    if (update.$set) delete update.$set.logo;
+    else delete update.logo;
+  }
+
+  if (Array.isArray(target.screenshots)) {
+    target.screenshots = target.screenshots.filter(Boolean);
+    if (target.screenshots.length === 0 && target.clearScreenshots !== true) {
+      if (update.$set) delete update.$set.screenshots;
+      else delete update.screenshots;
+    }
+  }
+
+  if (update.$set?.clearScreenshots !== undefined) delete update.$set.clearScreenshots;
+  if (update.clearScreenshots !== undefined) delete update.clearScreenshots;
+
+  next();
+});
+
 export default mongoose.models.Product || mongoose.model('Product', productSchema);
