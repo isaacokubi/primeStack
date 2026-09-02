@@ -3,12 +3,15 @@ import axios from 'axios';
 export const AUTH_USER_KEY = 'primeStack.auth.user';
 
 const configuredApiUrl = String(import.meta.env.VITE_API_URL || '').trim();
-const apiBaseUrl = configuredApiUrl || 'http://localhost:5000/api';
+const defaultApiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
+  ? 'http://localhost:5000/api'
+  : 'https://name-primestack-api.onrender.com/api';
+const apiBaseUrl = configuredApiUrl || defaultApiUrl;
 
 const api = axios.create({
   baseURL: apiBaseUrl,
   withCredentials: true,
-  timeout: 15000,
+  timeout: 20000,
 });
 
 export const saveAuthUser = user => {
@@ -37,34 +40,20 @@ const normalizeImageUrl = value => {
   if (typeof value !== 'string') return value;
   const image = value.trim();
   if (!image) return '';
-
   if (/^(data:image\/|https?:\/\/|blob:)/i.test(image)) return image;
   if (image.startsWith('//')) return `${window.location.protocol}${image}`;
-
-  // Legacy backend-relative image paths must resolve against the Render API host.
   if (image.startsWith('/')) return `${getApiOrigin()}${image}`;
-
-  // Older records may contain raw base64 without a data URL prefix.
-  if (/^[A-Za-z0-9+/_\-\s]+=*$/.test(image) && image.length > 100) {
-    return `data:image/jpeg;base64,${image.replace(/\s+/g, '')}`;
-  }
-
+  if (/^[A-Za-z0-9+/_\-\s]+=*$/.test(image) && image.length > 100) return `data:image/jpeg;base64,${image.replace(/\s+/g, '')}`;
   return image;
 };
 
 const normalizeRecordImages = record => {
   if (!record || typeof record !== 'object') return record;
   const out = { ...record };
-
-  ['logo', 'logoUrl', 'faviconUrl', 'founderImageUrl', 'heroImageUrl', 'imageUrl',
-   'coverImage', 'ogImage', 'image', 'thumbnail', 'avatarUrl'].forEach(key => {
+  ['logo', 'logoUrl', 'faviconUrl', 'founderImageUrl', 'heroImageUrl', 'imageUrl', 'coverImage', 'ogImage', 'image', 'thumbnail', 'avatarUrl'].forEach(key => {
     if (typeof out[key] === 'string') out[key] = normalizeImageUrl(out[key]);
   });
-
-  if (out.seo && typeof out.seo === 'object') {
-    out.seo = { ...out.seo, ogImage: normalizeImageUrl(out.seo.ogImage) };
-  }
-
+  if (out.seo && typeof out.seo === 'object') out.seo = { ...out.seo, ogImage: normalizeImageUrl(out.seo.ogImage) };
   return out;
 };
 
