@@ -1,6 +1,7 @@
 import axios from 'axios';
 
 export const AUTH_USER_KEY = 'primeStack.auth.user';
+export const AUTH_TOKEN_KEY = 'primeStack.auth.token';
 
 const configuredApiUrl = String(import.meta.env.VITE_API_URL || '').trim();
 const defaultApiUrl = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
@@ -14,6 +15,14 @@ const api = axios.create({
   timeout: 20000,
 });
 
+export const saveAuthToken = token => {
+  if (token) localStorage.setItem(AUTH_TOKEN_KEY, token);
+};
+
+export const getStoredAuthToken = () => localStorage.getItem(AUTH_TOKEN_KEY) || '';
+
+export const clearAuthToken = () => localStorage.removeItem(AUTH_TOKEN_KEY);
+
 export const saveAuthUser = user => {
   if (user) localStorage.setItem(AUTH_USER_KEY, JSON.stringify(user));
 };
@@ -26,7 +35,16 @@ export const getStoredAuthUser = () => {
   }
 };
 
-export const clearAuthUser = () => localStorage.removeItem(AUTH_USER_KEY);
+export const clearAuthUser = () => {
+  localStorage.removeItem(AUTH_USER_KEY);
+  clearAuthToken();
+};
+
+api.interceptors.request.use(config => {
+  const token = getStoredAuthToken();
+  if (token) config.headers.Authorization = `Bearer ${token}`;
+  return config;
+});
 
 const getApiOrigin = () => {
   try {
@@ -96,17 +114,19 @@ export const authApi = {
   login: async data => {
     const response = await api.post('/auth/login', data);
     saveAuthUser(response.data?.data?.user);
+    saveAuthToken(response.data?.data?.token);
     window.dispatchEvent(new Event('primeStackAuthChanged'));
     return response;
   },
   register: async data => {
     const response = await api.post('/auth/register', data);
     saveAuthUser(response.data?.data?.user);
+    saveAuthToken(response.data?.data?.token);
     window.dispatchEvent(new Event('primeStackAuthChanged'));
     return response;
   },
   me: async () => {
-    if (!getStoredAuthUser()) return { data: { success: true, data: { user: null } } };
+    if (!getStoredAuthUser() && !getStoredAuthToken()) return { data: { success: true, data: { user: null } } };
     const response = await api.get('/auth/me');
     const user = response.data?.data?.user;
     if (user) saveAuthUser(user);
@@ -146,10 +166,32 @@ export const contentApi = {
   get: (type, slug) => api.get(`/${type}/${slug}`),
 };
 
-export const contactApi = { create: data => api.post('/contact', data) };
-export const testimonialsApi = { list: (params = {}) => api.get('/testimonials', { params }) };
-export const newsletterApi = { subscribe: email => api.post('/newsletter', { email }) };
-export const customerApi = { dashboard: () => api.get('/customer/dashboard') };
+export const contactApi = {
+  create: data => api.post('/contact', data),
+  list: () => api.get('/contact'),
+  update: (id, data) => api.put(`/contact/${id}`, data),
+  remove: id => api.delete(`/contact/${id}`),
+};
+
+export const testimonialsApi = {
+  list: () => api.get('/testimonials'),
+  create: data => api.post('/testimonials', data),
+  update: (id, data) => api.put(`/testimonials/${id}`, data),
+  remove: id => api.delete(`/testimonials/${id}`),
+};
+
+export const newsletterApi = {
+  subscribe: email => api.post('/newsletter', { email }),
+};
+
+export const dashboardApi = {
+  stats: () => api.get('/dashboard/stats'),
+};
+
+export const adminApi = {
+  users: (params = {}) => api.get('/admin/users', { params }),
+  updateUserStatus: (id, status) => api.put(`/admin/users/${id}/status`, { status }),
+};
 
 export const uploadsApi = {
   image: file => {
