@@ -42,8 +42,18 @@ async function run() {
   if (!uri) throw new Error('MONGODB_URI must be configured');
   await mongoose.connect(uri);
 
+  // Sync only the seeded product content. Media is owned by the CMS and
+  // must never be overwritten by a deployment/restart seed operation.
   for (const product of products) {
-    await Product.findOneAndUpdate({ slug: product.slug }, { $set: product }, { upsert: true, new: true, setDefaultsOnInsert: true });
+    const { logo: seededLogo, screenshots: seededScreenshots, ...contentFields } = product;
+    const setOnInsert = {};
+    if (seededLogo) setOnInsert.logo = seededLogo;
+    if (Array.isArray(seededScreenshots) && seededScreenshots.length) setOnInsert.screenshots = seededScreenshots;
+    await Product.findOneAndUpdate(
+      { slug: product.slug },
+      { $set: contentFields, ...(Object.keys(setOnInsert).length ? { $setOnInsert: setOnInsert } : {}) },
+      { upsert: true, new: true, setDefaultsOnInsert: true },
+    );
   }
 
   for (const item of content) {
