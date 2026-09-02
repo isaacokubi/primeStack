@@ -14,6 +14,7 @@ import './admin/admin-sidebar-fix.css';
 import './admin/admin-green-blue-theme.css';
 import './admin/admin-sidebar-visibility-fix.css';
 import './founder-image-fix.css';
+import './product-media-global.css';
 import './dark-background-contrast.css';
 import './dashboard-light-contrast.css';
 import './dashboard-contrast-runtime.js';
