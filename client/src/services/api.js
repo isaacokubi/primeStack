@@ -22,15 +22,48 @@ export const getStoredAuthUser = () => {
 
 export const clearAuthUser = () => localStorage.removeItem(AUTH_USER_KEY);
 
+const normalizeImageUrl = value => {
+  if (typeof value !== 'string') return value;
+  const image = value.trim();
+  if (!image) return '';
+  if (/^(data:image\/|https?:\/\/|blob:|\/)/i.test(image)) return image;
+  // Admin uploads may be stored as raw base64. Browsers require a data URL.
+  if (/^[A-Za-z0-9+/\s]+=*$/.test(image) && image.length > 100) {
+    return `data:image/jpeg;base64,${image.replace(/\s+/g, '')}`;
+  }
+  return image;
+};
+
+const normalizeSiteSettings = data => {
+  if (!data || typeof data !== 'object') return data;
+  const site = { ...data };
+  site.logoUrl = normalizeImageUrl(site.logoUrl);
+  site.faviconUrl = normalizeImageUrl(site.faviconUrl);
+  site.founderImageUrl = normalizeImageUrl(site.founderImageUrl);
+  site.heroImageUrl = normalizeImageUrl(site.heroImageUrl);
+  site.imageUrl = normalizeImageUrl(site.imageUrl);
+  if (site.home) {
+    site.home = {
+      ...site.home,
+      heroImageUrl: normalizeImageUrl(site.home.heroImageUrl),
+      imageUrl: normalizeImageUrl(site.home.imageUrl),
+    };
+  }
+  return site;
+};
+
 api.interceptors.response.use(
-  response => response,
+  response => {
+    if (response.config?.url === '/site-settings' && response.data?.data) {
+      response.data.data = normalizeSiteSettings(response.data.data);
+    }
+    return response;
+  },
   error => {
     if (error.code === 'ECONNABORTED') {
       error.message = 'Request timed out';
     }
 
-    // localStorage is only a UI cache. The server session is authoritative.
-    // Never keep a stale cached user after an authenticated request fails.
     if (error.response?.status === 401 && !String(error.config?.url || '').includes('/auth/login')) {
       clearAuthUser();
       window.dispatchEvent(new Event('primeStackAuthChanged'));
@@ -59,8 +92,6 @@ export const authApi = {
   },
 
   me: async () => {
-    // Public pages do not need to make an authenticated request when there
-    // is no cached session. This avoids an expected 401 on every page load.
     if (!getStoredAuthUser()) return { data: { success: true, data: { user: null } } };
 
     const response = await api.get('/auth/me');
@@ -87,9 +118,6 @@ export const authApi = {
 };
 
 export const siteSettingsApi = {
-  // Use a timestamp query parameter for freshness without sending a custom
-  // Cache-Control request header, which would trigger an avoidable CORS
-  // preflight against APIs that do not allow that request header.
   get: () => api.get('/site-settings', { params: { _ts: Date.now() } }),
   update: async data => {
     const response = await api.put('/site-settings', data);
