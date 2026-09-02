@@ -1,3 +1,4 @@
+import './product-media-runtime.js';
 import { siteSettingsApi } from './services/api.js';
 
 const BRAND_EVENT = 'primeStackSiteSettingsChanged';
