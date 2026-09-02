@@ -141,7 +141,7 @@ for (const type of ['blog', 'case-studies', 'jobs']) {
   app.get(`/api/${type}`, async (_req, res) => { try { const content = await Content.find({ type, published: true }).sort({ publishedAt: -1, createdAt: -1 }).lean(); return ok(res, content); } catch (error) { return fail(res, error.message, 500); } });
   app.get(`/api/${type}/:slug`, async (req, res) => { const content = await Content.findOne({ type, slug: req.params.slug, published: true }).lean(); return content ? ok(res, content) : fail(res, 'Content not found', 404); });
   app.post(`/api/${type}`, auth, roles('Admin', 'Editor'), async (req, res) => { try { const content = await Content.create({ ...req.body, type, slug: slugify(req.body.slug || req.body.title), publishedAt: req.body.publishedAt || new Date() }); return ok(res, content, 'Created', null, 201); } catch (error) { return fail(res, error.message); } });
-  app.put(`/api/${type}/:id`, auth, roles('Admin', 'Editor'), async (req, res) => { const content = await Content.findOneAndUpdate({ _id: req.params.id, type }, req.body, { new: true, runValidators: true }); return content ? ok(res, content, 'Updated') : fail(res, 'Content not found'); });
+  app.put(`/api/${type}/:id`, auth, roles('Admin', 'Editor'), async (req, res) => { const content = await Content.findOneAndUpdate({ _id: req.params.id, type }, req.body, { new: true, runValidators: true }); return content ? ok(res, content, 'Updated') : fail(res, 'Content not found', 404); });
   app.delete(`/api/${type}/:id`, auth, roles('Admin'), async (req, res) => { const content = await Content.findOneAndDelete({ _id: req.params.id, type }); return content ? ok(res, null, 'Deleted') : fail(res, 'Content not found'); });
 }
 
@@ -166,18 +166,14 @@ const seed = async () => {
     { name: 'ProjectFlow', slug: 'projectflow', tagline: 'Project management without the overhead.', description: 'A focused workspace for planning projects, coordinating teams and keeping delivery on track.', longDescription: 'ProjectFlow brings planning, collaboration, reporting and accountability into one calm workspace.', category: 'Productivity', platforms: ['Web', 'Cloud'], technologies: ['React', 'Node.js', 'MongoDB'], status: 'Live', featured: true, features: [{ title: 'Real-time collaboration', description: 'Keep teams aligned with shared workspaces and updates.' }, { title: 'Advanced reporting', description: 'Turn delivery data into clear operational insight.' }, { title: 'Role-based permissions', description: 'Give every team member the right level of access.' }], benefits: ['Faster project delivery', 'Clearer ownership', 'Better operational visibility'] },
     { name: 'DataPulse', slug: 'datapulse', tagline: 'Business intelligence in real time.', description: 'Dashboards and analytics that turn operational data into decisions.', category: 'Analytics', platforms: ['Web', 'API'], technologies: ['React', 'Node.js', 'MongoDB'], status: 'Beta', featured: true, features: [{ title: 'Live dashboards', description: 'Monitor important metrics as they change.' }, { title: 'Flexible analytics', description: 'Build views around the questions your business asks.' }] },
     { name: 'SecureDesk', slug: 'securedesk', tagline: 'Customer support teams move faster.', description: 'Ticketing, knowledge and customer communication in one secure platform.', category: 'Security', platforms: ['Web', 'Cloud'], technologies: ['React', 'Node.js'], status: 'Coming Soon', featured: true, features: [{ title: 'Smart ticketing', description: 'Route and prioritize customer issues.' }, { title: 'Knowledge base', description: 'Help customers find answers quickly.' }] },
-    { name: 'AutomateX', slug: 'automatex', tagline: 'Automate repetitive business workflows.', description: 'Connect processes, approvals and notifications without unnecessary manual work.', category: 'Automation', platforms: ['Web', 'API'], technologies: ['Node.js', 'MongoDB'], status: 'Live', featured: true, features: [{ title: 'Workflow automation', description: 'Connect repetitive business processes.' }] }
+    { name: 'AutomateX', slug: 'automatex', tagline: 'Automate repetitive business workflows.', description: 'Connect processes, approvals and notifications without unnecessary manual work.', category: 'Automation', platforms: ['Web', 'API'], technologies: ['Node.js', 'MongoDB'], status: 'Live', featured: true, features: [{ title: 'Workflow builder', description: 'Model repeatable processes visually.' }, { title: 'API integrations', description: 'Connect your existing systems.' }] }
   ]);
+  if (!await SiteSettings.exists({ key: 'site' })) await SiteSettings.create(siteDefaults());
 };
 
-const start = async () => {
-  const mongoUrl = process.env.MONGODB_URI || process.env.MONGO_URI || process.env.DB_URL;
-  if (!mongoUrl) throw new Error('MONGODB_URI (or MONGO_URI/DB_URL) must be configured');
-  await mongoose.connect(mongoUrl);
-  await seed();
-  app.listen(port, '0.0.0.0', () => console.log(`primeStack API running on port ${port}`));
-};
+app.use((req, res) => fail(res, 'Route not found', 404));
+app.use((error, _req, res, _next) => { console.error(error); return fail(res, error.message || 'Internal server error', error.status || 500); });
 
-start().catch(error => { console.error(error); process.exit(1); });
+(async () => { try { if (process.env.MONGODB_URI) await mongoose.connect(process.env.MONGODB_URI); await seed(); app.listen(port, '0.0.0.0', () => console.log(`primeStack API listening on ${port}`)); } catch (error) { console.error('Startup failed:', error); process.exit(1); } })();
 
 export default app;
