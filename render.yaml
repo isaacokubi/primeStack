@@ -7,9 +7,6 @@ services:
     startCommand: npm start
     plan: free
     healthCheckPath: /api/health
-      - type: rewrite
-        source: /*
-        destination: /index.html
 
   - type: static
     name: primestack-web
