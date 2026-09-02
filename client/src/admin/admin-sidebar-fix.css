@@ -16,3 +16,8 @@
 .adminProUser strong,.adminProUser span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.adminProSignout{display:flex;align-items:center;justify-content:center;min-height:40px}
 @media(max-height:720px) and (min-width:901px){.adminProSidebar{padding-top:12px;padding-bottom:8px}.adminProBrand{padding-bottom:12px;margin-bottom:7px}.adminProSectionLabel{padding-top:7px;padding-bottom:5px}.adminProNav{gap:2px}.adminProNav button,.adminProCompleteNav{padding-top:8px;padding-bottom:8px}.adminProSidebarBottom{padding-top:9px}.adminProUser{padding:5px 8px}.adminProSignout{margin-top:5px;padding:8px;min-height:36px}}
 @media(max-width:900px){.adminProSidebar{position:fixed;inset:0 auto 0 0;height:100dvh;max-height:100dvh;overflow:hidden}.adminProNav{overflow-y:auto}}
+
+/* The admin sidebar now owns the Conversations entry. Hide the old floating
+   launcher on admin pages so it cannot appear as a duplicate "Conversations"
+   control or expose its SVG icon beside the sidebar. */
+.adminPro ~ .inquiryWidget .inquiryWidgetLauncher{display:none!important}
