@@ -23,5 +23,5 @@ main>section,main>article,.hero{width:calc(100% - 28px)}
 .hero h1,.pageHead h1,.detailHero h1{font-size:clamp(2.45rem,13vw,3.5rem)}
 
 /* Readability: public marketing copy on the dark theme. */
-.hero p,.pageHead>p,.detailHero>p,.service p,.aboutGrid p,.article .lead,.articleBody,.card p,.cta p,.newsletter p{color:#fff!important}
-.pageHead>p,.hero p,.detailHero>p,.service p,.aboutGrid p,.article .lead,.articleBody,.card p,.cta p,.newsletter p{opacity:.94}
+.hero p,.pageHead>p,.detailHero>p,.service p,.aboutGrid p,.article .lead,.articleBody,.card p,.cta p,.newsletter p{color:#fff!important;}
+.pageHead>p,.hero p,.detailHero>p,.service p,.aboutGrid p,.article .lead,.articleBody,.card p,.cta p,.newsletter p{opacity:.94;}
